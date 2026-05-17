@@ -52,11 +52,11 @@ common:
     url: https://api.ontraport.com/doc/
   - type: Pricing
     url: https://ontraport.com/pricing
-  - type: Sign Up
+  - type: SignUp
     url: https://ontraport.com/freetrial
   - type: Support
     url: https://support.ontraport.com
-  - type: GitHub Organization
+  - type: GitHubOrganization
     url: https://github.com/Ontraport
 maintainers:
   - FN: Kin Lane
