@@ -46,6 +46,8 @@ apis:
       - type: GitHub SDK
         url: https://github.com/Ontraport/SDK-PHP
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/ontraport
   - type: Website
     url: https://ontraport.com
   - type: Documentation
