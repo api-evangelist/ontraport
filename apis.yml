@@ -54,7 +54,7 @@ common:
     url: https://api.ontraport.com/doc/
   - type: Pricing
     url: https://ontraport.com/pricing
-  - type: SignUp
+  - type: Signup
     url: https://ontraport.com/freetrial
   - type: Support
     url: https://support.ontraport.com
