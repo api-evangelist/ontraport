@@ -1,0 +1,21 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/ontraport-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: Api-Key
+  sources:
+  - openapi/ontraport-openapi.yml
+- name: AppIdAuth
+  type: apiKey
+  in: header
+  parameter: Api-Appid
+  sources:
+  - openapi/ontraport-openapi.yml

@@ -46,6 +46,10 @@ apis:
       - type: GitHub SDK
         url: https://github.com/Ontraport/SDK-PHP
 common:
+  - type: DomainSecurity
+    url: security/ontraport-domain-security.yml
+  - type: Authentication
+    url: authentication/ontraport-authentication.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/ontraport
   - type: Website
@@ -60,6 +64,8 @@ common:
     url: https://support.ontraport.com
   - type: GitHubOrganization
     url: https://github.com/Ontraport
+  - url: https://ontraport.com/blog/feed/
+    type: Blog
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
