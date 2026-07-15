@@ -46,6 +46,8 @@ apis:
       - type: GitHub SDK
         url: https://github.com/Ontraport/SDK-PHP
 common:
+  - type: AgenticAccess
+    url: agentic-access/ontraport-agentic-access.yml
   - type: DomainSecurity
     url: security/ontraport-domain-security.yml
   - type: Authentication
