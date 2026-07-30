@@ -9,7 +9,19 @@ description: >-
   contacts, transactions, tags, sequences, forms, landing pages, and
   ecommerce objects using API-Key and Api-Appid header authentication.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/ontraport.png
 tags:
   - CRM
   - Marketing Automation
@@ -23,28 +35,47 @@ created: '2026-05-11'
 modified: '2026-05-11'
 specificationVersion: '0.19'
 apis:
-  - aid: ontraport:rest-api
-    name: Ontraport REST API
-    description: >-
-      RESTful API providing CRUD access to contacts, transactions, tags,
-      sequences, forms, landing pages, and ecommerce objects. Authentication
-      uses two headers, Api-Key and Api-Appid, on every request, with a
-      180-requests-per-minute rolling rate limit.
-    humanURL: https://api.ontraport.com/doc/
-    baseURL: https://api.ontraport.com/1
-    tags:
-      - CRM
-      - Marketing Automation
-      - Contacts
-      - Transactions
-      - Sequences
-    properties:
-      - type: Documentation
-        url: https://api.ontraport.com/doc/
-      - type: Live Testing
-        url: https://api.ontraport.com/live/
-      - type: GitHub SDK
-        url: https://github.com/Ontraport/SDK-PHP
+- aid: ontraport:rest-api
+  name: Ontraport REST API
+  description: >-
+    RESTful API providing CRUD access to contacts, transactions, tags, sequences, forms, landing pages,
+    and ecommerce objects. Authentication uses two headers, Api-Key and Api-Appid, on every request, with
+    a 180-requests-per-minute rolling rate limit.
+  humanURL: https://api.ontraport.com/doc/
+  baseURL: https://api.ontraport.com/1
+  tags:
+  - CRM
+  - Marketing Automation
+  - Contacts
+  - Transactions
+  - Sequences
+  properties:
+  - type: Documentation
+    url: https://api.ontraport.com/doc/
+  - type: Live Testing
+    url: https://api.ontraport.com/live/
+  - type: GitHub SDK
+    url: https://github.com/Ontraport/SDK-PHP
+- aid: ontraport:ontraport-metadata-api
+  name: Ontraport Metadata API
+  description: Object metadata and field information.
+  humanURL: https://api.ontraport.com/doc/
+  baseURL: https://api.ontraport.com/1
+  tags:
+  - Metadata
+  properties:
+  - type: OpenAPI
+    url: openapi/ontraport-metadata-api-openapi.yml
+- aid: ontraport:ontraport-objects-api
+  name: Ontraport Objects API
+  description: Generic CRUD operations across Ontraport object types.
+  humanURL: https://api.ontraport.com/doc/
+  baseURL: https://api.ontraport.com/1
+  tags:
+  - Objects
+  properties:
+  - type: OpenAPI
+    url: openapi/ontraport-objects-api-openapi.yml
 common:
   - type: AgenticAccess
     url: agentic-access/ontraport-agentic-access.yml
