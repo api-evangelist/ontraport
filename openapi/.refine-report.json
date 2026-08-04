@@ -1,0 +1,16 @@
+{
+  "provider": "ontraport",
+  "sources": [
+    "ontraport-metadata-api-openapi.yml",
+    "ontraport-objects-api-openapi.yml"
+  ],
+  "outputs": [
+    "ontraport-metadata-api-openapi.yml",
+    "ontraport-objects-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

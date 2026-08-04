@@ -1,0 +1,210 @@
+openapi: 3.1.0
+info:
+  title: Ontraport REST API
+  description: |
+    Ontraport's REST API exposes CRUD access to contacts, transactions, tags,
+    sequences, forms, landing pages, and ecommerce objects. Authentication uses
+    `Api-Key` and `Api-Appid` HTTP headers. All endpoints share a generic object
+    interface where the object type is specified via parameters.
+  version: "1.0.0"
+  contact:
+    name: Ontraport Developer Documentation
+    url: https://api.ontraport.com/doc/
+servers:
+  - url: https://api.ontraport.com/1
+    description: Ontraport REST API v1
+security:
+  - ApiKeyAuth: []
+    AppIdAuth: []
+tags:
+  - name: Objects
+    description: Generic CRUD operations across Ontraport object types.
+  - name: Metadata
+    description: Object metadata and field information.
+paths:
+  /objects:
+    get:
+      tags: [Objects]
+      summary: List objects
+      description: Retrieves a collection of objects based on a set of parameters.
+      parameters:
+        - $ref: '#/components/parameters/ObjectTypeId'
+        - name: start
+          in: query
+          schema: { type: integer }
+        - name: range
+          in: query
+          schema: { type: integer }
+      responses:
+        '200': { $ref: '#/components/responses/ObjectsResponse' }
+    post:
+      tags: [Objects]
+      summary: Create object
+      description: Adds new data to your database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ObjectInput' }
+      responses:
+        '200': { $ref: '#/components/responses/ObjectResponse' }
+    put:
+      tags: [Objects]
+      summary: Update object
+      description: Updates existing object data.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ObjectInput' }
+      responses:
+        '200': { $ref: '#/components/responses/ObjectResponse' }
+    delete:
+      tags: [Objects]
+      summary: Delete object(s)
+      description: Permanently removes data from the database.
+      parameters:
+        - $ref: '#/components/parameters/ObjectTypeId'
+        - name: id
+          in: query
+          schema: { type: integer }
+      responses:
+        '200': { $ref: '#/components/responses/SimpleResponse' }
+  /object:
+    get:
+      tags: [Objects]
+      summary: Retrieve a single object by ID
+      parameters:
+        - $ref: '#/components/parameters/ObjectTypeId'
+        - name: id
+          in: query
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { $ref: '#/components/responses/ObjectResponse' }
+  /objects/saveorupdate:
+    post:
+      tags: [Objects]
+      summary: Save or update object
+      description: Creates a new object or merges with an existing one if a unique field matches.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ObjectInput' }
+      responses:
+        '200': { $ref: '#/components/responses/ObjectResponse' }
+  /objects/meta:
+    get:
+      tags: [Metadata]
+      summary: Retrieve object field metadata
+      parameters:
+        - $ref: '#/components/parameters/ObjectTypeId'
+      responses:
+        '200': { $ref: '#/components/responses/SimpleResponse' }
+  /objects/getInfo:
+    get:
+      tags: [Metadata]
+      summary: Retrieve collection info
+      description: Returns collection information such as object counts.
+      parameters:
+        - $ref: '#/components/parameters/ObjectTypeId'
+      responses:
+        '200': { $ref: '#/components/responses/SimpleResponse' }
+  /objects/tag:
+    get:
+      tags: [Objects]
+      summary: Retrieve objects by tag
+      parameters:
+        - $ref: '#/components/parameters/ObjectTypeId'
+        - name: tag_id
+          in: query
+          schema: { type: integer }
+      responses:
+        '200': { $ref: '#/components/responses/ObjectsResponse' }
+  /object/getByEmail:
+    get:
+      tags: [Objects]
+      summary: Retrieve object ID by email
+      parameters:
+        - $ref: '#/components/parameters/ObjectTypeId'
+        - name: email
+          in: query
+          required: true
+          schema: { type: string, format: email }
+      responses:
+        '200': { $ref: '#/components/responses/SimpleResponse' }
+  /objects/fieldeditor:
+    post:
+      tags: [Metadata]
+      summary: Create custom fields and sections
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { $ref: '#/components/responses/SimpleResponse' }
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Api-Key
+    AppIdAuth:
+      type: apiKey
+      in: header
+      name: Api-Appid
+  parameters:
+    ObjectTypeId:
+      name: objectID
+      in: query
+      required: true
+      description: Numeric Ontraport object type ID (e.g. 0 = Contacts).
+      schema: { type: integer }
+  schemas:
+    ObjectInput:
+      type: object
+      additionalProperties: true
+      properties:
+        objectID:
+          type: integer
+        email:
+          type: string
+          format: email
+        firstname:
+          type: string
+        lastname:
+          type: string
+    ObjectResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        code: { type: integer }
+        data: { type: object, additionalProperties: true }
+    ObjectsListResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        code: { type: integer }
+        data:
+          type: array
+          items: { type: object, additionalProperties: true }
+  responses:
+    ObjectResponse:
+      description: Single object response
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ObjectResponse' }
+    ObjectsResponse:
+      description: Collection of objects response
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ObjectsListResponse' }
+    SimpleResponse:
+      description: Generic response
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
