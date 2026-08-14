@@ -7,7 +7,12 @@ description: >-
   contact management, sales pipelines, payment processing, and visual
   automation campaigns in a single workspace. Ontraport's REST API exposes
   contacts, transactions, tags, sequences, forms, landing pages, and
-  ecommerce objects using API-Key and Api-Appid header authentication.
+  ecommerce objects using API-Key and Api-Appid header authentication, through a
+  generic object interface where the record type is selected by an integer object
+  type ID rather than by a path segment. Ontraport also runs a first-party remote
+  MCP server at https://mcp.ontraport.com, publishing 47 tools across CRUD, query,
+  management and commerce and authorizing them with OAuth 2.1 (PKCE, dynamic client
+  registration) under a single mcp:tools scope.
 type: Index
 accessModel:
   pricing: unknown
@@ -29,11 +34,20 @@ tags:
   - Ecommerce
   - Landing Pages
   - Membership Sites
+  - MCP
+  - AI Agents
+  - Payments
+  - Sales Automation
 url: >-
   https://raw.githubusercontent.com/api-evangelist/ontraport/refs/heads/main/apis.yml
 created: '2026-05-11'
-modified: '2026-05-11'
+modified: '2026-08-13'
 specificationVersion: '0.19'
+x-enrichment:
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 26
+  pass: local-v1
 apis:
 - aid: ontraport:rest-api
   name: Ontraport REST API
@@ -66,6 +80,12 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/ontraport-metadata-api-openapi.yml
+  - type: Overlay
+    url: overlays/ontraport-metadata-api-overlay.yaml
+  - type: PostmanCollection
+    url: collections/ontraport-metadata-api.postman_collection.json
+  - type: OpenCollection
+    url: collections/ontraport-metadata-api.opencollection.json
 - aid: ontraport:ontraport-objects-api
   name: Ontraport Objects API
   description: Generic CRUD operations across Ontraport object types.
@@ -76,9 +96,91 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/ontraport-objects-api-openapi.yml
+  - type: Overlay
+    url: overlays/ontraport-objects-api-overlay.yaml
+  - type: PostmanCollection
+    url: collections/ontraport-objects-api.postman_collection.json
+  - type: OpenCollection
+    url: collections/ontraport-objects-api.opencollection.json
+- aid: ontraport:mcp
+  name: Ontraport MCP Server
+  description: >-
+    Ontraport's first-party, hosted, remote MCP server. A streamable-HTTP endpoint an agent
+    POSTs to directly at https://mcp.ontraport.com — there is no package to install and no
+    local stdio process. It is a translation layer over the Ontraport REST API exposing 47
+    tools across four categories: generic CRUD, Query (structural discovery, engagement
+    tracking, account health), Manage (tags, subscriptions, relationships, tasks) and
+    Commerce (invoicing, payments, refunds, subscriptions). Authorization is OAuth 2.1 with
+    PKCE S256 against https://app.ontraport.com under a single mcp:tools scope, with an
+    Api-Appid/Api-Key header fallback for platforms that cannot run the OAuth flow.
+  humanURL: https://ontraport.com/support/My-account/mcp-server
+  baseURL: https://mcp.ontraport.com
+  tags:
+  - MCP
+  - AI Agents
+  - CRM
+  - Marketing Automation
+  - Commerce
+  properties:
+  - type: MCPServer
+    url: mcp/ontraport-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/ontraport-tool-crosswalk.yml
+  - type: OAuthScopes
+    url: scopes/ontraport-scopes.yml
+  - type: Documentation
+    url: https://ontraport.com/support/My-account/mcp-server
+  - type: WellKnown
+    url: well-known/ontraport-well-known.yml
 common:
   - type: AgenticAccess
     url: agentic-access/ontraport-agentic-access.yml
+  - type: MCPServer
+    url: mcp/ontraport-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/ontraport-tool-crosswalk.yml
+  - type: WellKnown
+    url: well-known/ontraport-well-known.yml
+  - type: OAuthScopes
+    url: scopes/ontraport-scopes.yml
+  - type: Packages
+    url: packages/ontraport-packages.yml
+  - type: SDKs
+    url: packages/ontraport-packages.yml
+  - type: LLMsTxt
+    url: llms/ontraport-llms.txt
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: Conventions
+    url: conventions/ontraport-conventions.yml
+  - type: Idempotency
+    url: conventions/ontraport-conventions.yml
+  - type: ErrorCatalog
+    url: errors/ontraport-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ontraport-rate-limits.yml
+  - type: DataModel
+    url: data-model/ontraport-data-model.yml
+  - type: ChangeLog
+    url: changelog/ontraport-changelog.yml
+  - type: Lifecycle
+    url: lifecycle/ontraport-lifecycle.yml
+  - type: StatusPage
+    url: https://ontraportstatus.com
+  - type: Conformance
+    url: conformance/ontraport-conformance.yml
+  - type: Compliance
+    url: security/ontraport-trust-center.yml
+  - type: TrustCenter
+    url: security/ontraport-trust-center.yml
+  - type: Webhooks
+    url: asyncapi/ontraport-webhooks.yml
+  - type: Plans
+    url: plans/ontraport-plans-pricing.yml
+  - type: PostmanCollection
+    url: collections/ontraport.postman_collection.json
+  - type: OpenCollection
+    url: collections/ontraport.opencollection.json
   - type: DomainSecurity
     url: security/ontraport-domain-security.yml
   - type: Authentication
@@ -99,6 +201,24 @@ common:
     url: https://github.com/Ontraport
   - url: https://ontraport.com/blog/feed/
     type: Blog
+  - type: APIReference
+    url: https://api.ontraport.com/doc/
+  - type: DeveloperPortal
+    url: https://ontraport.com/features/platform/api
+  - type: GettingStarted
+    url: https://api.ontraport.com/doc/#authentication
+  - type: Login
+    url: https://app.ontraport.com/login.php
+  - type: TermsOfService
+    url: https://ontraport.com/legal
+  - type: PrivacyPolicy
+    url: https://ontraport.com/legal
+  - type: HelpCenter
+    url: https://ontraport.com/support
+  - type: About
+    url: https://ontraport.com/about
+  - type: Careers
+    url: https://ontraport.com/careers
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
