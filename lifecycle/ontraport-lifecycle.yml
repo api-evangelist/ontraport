@@ -1,0 +1,142 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://api.ontraport.com/doc/#api-change-log, https://ontraportstatus.com,
+  https://ontraport.statuspage.io/api/v2/summary.json, https://ontraport.com/service-status,
+  https://ontraport.com/legal
+description: >-
+  Ontraport's API lifecycle posture: one path-versioned API (v1) that has never had a
+  successor, a dated change log that announces deprecations in prose, a machine-readable
+  Statuspage with a dedicated API component — and no published deprecation policy, no
+  Sunset/Deprecation headers, and no SLA. Fields are deprecated by announcement and then
+  left in place; `group_ids` was undocumented in 2020 and still functions, and
+  `num_purchased` was announced as removable in 2019 and has not been removed.
+
+versioning:
+  scheme: path
+  current: v1
+  path_segment: /1
+  base_url: https://api.ontraport.com/1
+  versions_live: 1
+  previous_versions: []
+  note: >-
+    No second version has ever shipped. There is no version negotiation header, no dated
+    version scheme, and no beta channel.
+  legacy_docs: https://api.ontraport.com/live
+  legacy_docs_note: >-
+    The pre-2017 documentation remains served at /live and is also used as the "Try it out
+    live" console. Announced 2017-05-25.
+
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  mechanism: >-
+    Announced as a dated entry in the API change log, in prose. No notice period is
+    committed to, no removal date is given, and no HTTP header signals a deprecated
+    operation or field at runtime.
+  changelog: https://api.ontraport.com/doc/#api-change-log
+  deprecated_items:
+  - item: Purchases.sku
+    announced: '2023-08-02'
+    status: removed
+    note: No longer populated; removed from GET /Purchases response data.
+  - item: num_purchased
+    announced: '2019-10-22'
+    status: announced-not-removed
+    note: >-
+      "Deprecated and will be removed from response data in the future." No removal date
+      given; still documented as of this pass.
+  - item: group_ids
+    announced: '2020-01-09'
+    status: undocumented-still-functional
+    note: >-
+      Replaced by group_id. Ontraport states it "will no longer be documented, but will
+      continue to function as-is" — deprecation by documentation removal rather than by
+      contract.
+  - item: PING URL rule parameters (url, post_data, json_flag)
+    announced: '2019-07-11'
+    status: deprecated
+    note: Replaced by a single Webhook ID parameter.
+  - item: getSmartFormHTML (PHP SDK)
+    announced: '2019-06-19'
+    status: deprecated
+    note: Replaced by getFormHTML, which serves both OntraForms and SmartForms.
+  - item: 'Contacts/Tasks/Landingpages/Forms/Transactions legacy fields'
+    announced: '2017-05-25'
+    status: removed
+  - item: Form types other than the documented codes
+    announced: null
+    status: deprecated
+    note: >-
+      The Forms reference states "Any other codes correspond to deprecated form types"
+      without enumerating them.
+  spec_deprecations:
+    checked: true
+    count: 0
+    note: >-
+      No operation or parameter in openapi/ontraport-objects-api-openapi.yml or
+      openapi/ontraport-metadata-api-openapi.yml carries `deprecated: true`.
+
+status_page:
+  published: true
+  url: https://ontraportstatus.com
+  alternate_url: https://ontraport.statuspage.io
+  linked_from: https://ontraport.com/service-status
+  platform: Atlassian Statuspage
+  machine_readable: true
+  api:
+    summary: https://ontraport.statuspage.io/api/v2/summary.json
+    status: https://ontraport.statuspage.io/api/v2/status.json
+    components: https://ontraport.statuspage.io/api/v2/components.json
+    incidents: https://ontraport.statuspage.io/api/v2/incidents.json
+    probed: '2026-08-13'
+    http_status: 200
+  components:
+  - API
+  - Ontraport Application
+  - Ontraport Login
+  - Ontraport Website
+  - Backend Services
+  - Automation
+  - Email Delivery
+  - Landing Pages
+  - Lead Generation Forms
+  - Payment Forms
+  - Payment Processing
+  - Client Facing
+  - Hosted Wordpress Sites
+  - Isolated Accounts
+  - Isolated
+  - DNS
+  - HTTPS Certificate Issuance
+  component_count: 17
+  note: >-
+    A dedicated "API" component exists, so API incidents are separable from application
+    incidents — the useful case for an integrator. Page last updated 2026-07-17; indicator
+    "none / All Systems Operational" at the time of this probe.
+
+sla:
+  published: false
+  uptime_commitment: null
+  note: >-
+    No uptime percentage, credit schedule or support-response commitment is published on
+    the pricing page, the security page or the Terms of Service. Enterprise plans advertise
+    "VIP support + onboarding" and dedicated infrastructure as features, not as a measured
+    SLA.
+
+support:
+  url: https://ontraport.com/support
+  status_url: https://ontraport.com/service-status
+  legal: https://ontraport.com/legal
+  api_increase_path: >-
+    Rate limit increases are handled case-by-case by support; there is no self-serve path.
+
+api_maturity:
+  first_documented_change: '2017-05-25'
+  most_recent_change: '2026-06-10'
+  years_in_service: 9
+  assessment: >-
+    Stable and maintained but not evolving. Nine years on one version with additive changes
+    only, and no breaking change since 2023-08-02.

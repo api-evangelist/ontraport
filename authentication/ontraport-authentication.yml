@@ -1,21 +1,135 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/ontraport-openapi.yml
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://api.ontraport.com/doc/#authentication (REST),
+  https://ontraport.com/support/My-account/mcp-server plus the RFC 9728/8414 metadata at
+  https://mcp.ontraport.com/.well-known/oauth-protected-resource and
+  https://app.ontraport.com/.well-known/oauth-authorization-server (MCP), cross-checked
+  against openapi/ontraport-objects-api-openapi.yml
+docs: https://api.ontraport.com/doc/#authentication
+description: >-
+  Ontraport runs two different authentication models on two different surfaces. The REST API
+  uses a pair of static, unscoped, non-expiring account headers — Api-Key AND Api-Appid,
+  both required, both sent on every request. The MCP server runs a modern OAuth 2.1 flow
+  (authorization code + PKCE S256, refresh tokens, dynamic client registration, one scope)
+  and accepts the REST header pair as a fallback for clients that cannot do OAuth. The REST
+  surface has no OAuth, no scopes, no token expiry and no documented rotation procedure;
+  what bounds a key is the Ontraport package-level and user-level permissions of the user
+  who owns it, which have applied to API requests since 2019-02-01.
+
 summary:
+  surfaces: 2
   types:
   - apiKey
+  - oauth2
   api_key_in:
   - header
+  oauth_scopes: 1
+  token_expiry: none on REST; refresh-token rotation on MCP
+  mtls: false
+  jwt: false
+
 schemes:
 - name: ApiKeyAuth
+  surface: rest
   type: apiKey
   in: header
   parameter: Api-Key
+  required: true
+  description: >-
+    The account's unique API key. Must be used in conjunction with the App ID or the request
+    will not authenticate.
   sources:
-  - openapi/ontraport-openapi.yml
+  - openapi/ontraport-objects-api-openapi.yml
+  - openapi/ontraport-metadata-api-openapi.yml
+  - https://api.ontraport.com/doc/#authentication
 - name: AppIdAuth
+  surface: rest
   type: apiKey
   in: header
   parameter: Api-Appid
+  required: true
+  description: The account's unique site/App ID.
   sources:
-  - openapi/ontraport-openapi.yml
+  - openapi/ontraport-objects-api-openapi.yml
+  - openapi/ontraport-metadata-api-openapi.yml
+  - https://api.ontraport.com/doc/#authentication
+- name: McpOAuth
+  surface: mcp
+  type: oauth2
+  flow: authorizationCode
+  pkce: S256
+  authorization_url: https://app.ontraport.com/oauth/authorize
+  token_url: https://app.ontraport.com/oauth/token
+  registration_url: https://app.ontraport.com/oauth/register
+  revocation_url: https://app.ontraport.com/oauth/revoke
+  grant_types:
+  - authorization_code
+  - refresh_token
+  token_endpoint_auth_methods:
+  - client_secret_post
+  - none
+  scopes:
+  - mcp:tools
+  resource: https://mcp.ontraport.com
+  description: >-
+    The standard connection flow for MCP clients that support OAuth (Claude Desktop, Claude
+    Code, ChatGPT). Dynamic client registration is supported, as is the client-id metadata
+    document.
+  sources:
+  - well-known/ontraport-oauth-protected-resource.json
+  - well-known/ontraport-oauth-authorization-server.json
+  see: scopes/ontraport-scopes.yml
+- name: McpApiKeyFallback
+  surface: mcp
+  type: apiKey
+  in: header
+  parameter: Api-Appid + Api-Key
+  alternate_form: 'Authorization: Bearer <app-id>:<api-key>'
+  description: >-
+    For orchestration platforms and agent frameworks where the OAuth flow is not practical.
+    The App ID and API Key are NOT used as an OAuth client id/secret — they are passed
+    directly as headers. Ontraport states keys are never surfaced after setup: not in MCP
+    connection summaries, tool responses, URLs, user-facing error messages, or standard logs.
+  sources:
+  - https://ontraport.com/support/My-account/mcp-server
+
+authorization_model:
+  rest:
+    scopes: false
+    bounded_by:
+    - Ontraport package-level permissions
+    - the permissions of the user who owns the credentials
+    - the per-object Access column in the Accessible Objects table (many types are GET-only)
+    effective_since: '2019-02-01'
+    source: 'https://api.ontraport.com/doc/#api-change-log (notice dated 2018-12-18)'
+  mcp:
+    scopes:
+    - mcp:tools
+    bounded_by:
+    - the single mcp:tools scope
+    - a per-connection tool allow/deny panel exposed after connecting
+    - a server-side guard that ignores requests to delete every record in a collection
+    - disabled generic writes on Invoices, Payments and Orders
+
+failure_modes:
+- surface: rest
+  status: 401
+  body: Your App ID and API Key do not authenticate.
+  note: >-
+    Observed live on an unauthenticated GET https://api.ontraport.com/1/... during this pass.
+- surface: mcp
+  status: 401
+  body: '{"error":"unauthorized","error_description":"Bearer token required"}'
+  www_authenticate: >-
+    Bearer resource_metadata="https://mcp.ontraport.com/.well-known/oauth-protected-resource",
+    scope="mcp:tools"
+  note: >-
+    Observed live on an unauthenticated tools/list POST to https://mcp.ontraport.com during
+    this pass. A correct RFC 9728 challenge.
+
+gaps:
+- REST keys do not expire and there is no documented rotation or revocation procedure.
+- REST keys are unscoped — an integration that only needs to read contacts holds the same key that can charge a card.
+- No mutual TLS, no signed requests, no IP allowlist documented for the REST API.
+- No key-prefix convention that would let a leaked credential be recognised in logs or scanning.

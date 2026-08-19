@@ -1,0 +1,138 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://api.ontraport.com/doc/#webhooks, https://api.ontraport.com/doc/#webhook-events,
+  https://api.ontraport.com/doc/#webhook-log
+description: >-
+  Ontraport ships an outbound webhook surface with four subscribable events, managed through
+  the API itself (Webhook/subscribe and Webhook/unsubscribe) rather than only through the
+  app UI. It publishes NO AsyncAPI definition and no event schema document — the payload
+  shape exists only as example JSON in the reference, and there is no signature, shared
+  secret or timestamp-tolerance mechanism documented for verifying that an inbound payload
+  really came from Ontraport.
+asyncapi_published: false
+asyncapi_note: >-
+  Probed for a published AsyncAPI on the API host and the GitHub org; none exists. NOT
+  fabricated — this file is the webhook catalog, not a spec.
+
+transport: https-post
+subscription:
+  managed_via: api
+  endpoints:
+  - method: POST
+    path: /Webhook/subscribe
+    content_type: application/x-www-form-urlencoded
+    params:
+    - name: url
+      description: The HTTPS endpoint Ontraport POSTs the payload to.
+    - name: event
+      description: >-
+        The event, with its target in parentheses — e.g. sub_tag(1),
+        object_submits_form(1). The number selects the specific tag or form.
+    - name: data
+      description: >-
+        JSON string of options. The documented key is `format`, with values seen in the
+        reference including "lightweight" and "notify".
+  - method: POST
+    path: /Webhook/unsubscribe
+  - method: GET
+    path: /Webhook
+    description: Retrieve a specific webhook.
+  - method: GET
+    path: /Webhooks
+    description: Retrieve multiple webhooks.
+  - method: GET
+    path: /Webhooks/meta
+    description: Retrieve webhook object meta.
+  exposed: '2018-03-06'
+
+events:
+- name: object_create
+  trigger: A new contact or custom object is added.
+  target: object type
+- name: object_submits_form
+  trigger: Any contact or custom object fills out the specified form.
+  target: form id
+- name: sub_tag
+  trigger: Any contact or custom object is added to the specified tag.
+  target: tag id
+- name: unsub_tag
+  trigger: Any contact or custom object is removed from the specified tag.
+  target: tag id
+event_count: 4
+
+payload:
+  content_type: application/json
+  envelope:
+  - field: webhook_id
+    type: string
+  - field: object_type_id
+    type: string
+    description: The Ontraport object type ID of the record that triggered the event.
+  - field: event
+    type: object
+    description: '{type, plus the target id — e.g. form_id or tag_id}'
+  - field: data
+    type: object
+    description: The record's field values at the time of the event.
+  - field: timestamp
+    type: integer
+    description: Unix timestamp, present in the stored last_payload example.
+
+webhook_object:
+  fields:
+  - id
+  - event
+  - data
+  - url
+  - last_hook
+  - last_code
+  - last_payload
+  note: >-
+    last_code stores the HTTP status the subscriber's endpoint returned on the last delivery
+    and last_payload stores the last body sent — the only delivery-status signal Ontraport
+    exposes on the subscription record itself.
+
+delivery_log:
+  object: Webhook Log
+  endpoints:
+  - GET /WebhookLog
+  - GET /WebhookLogs
+  - GET /WebhookLogs/meta
+  - GET /WebhookLogs/getInfo
+  exposed: '2023-05-31'
+  retention: >-
+    Maximum 10,000 entries. Successful webhooks are retained for 2 days; unsuccessful
+    webhooks for 7 days. Covers both webhooks sent from Ontraport App preferences and those
+    from an API webhook subscription.
+
+verification:
+  signature: false
+  shared_secret: false
+  timestamp_tolerance: false
+  ip_allowlist: not documented
+  note: >-
+    No HMAC signature header, no shared secret and no replay window are documented. A
+    receiver cannot cryptographically establish that a payload originated from Ontraport —
+    the only mitigation available to an integrator is a secret path segment on the
+    subscription URL, which Ontraport does not document either.
+
+retries:
+  policy: not documented
+  note: >-
+    No retry schedule, backoff policy or dead-letter behaviour is published. The Webhook Log
+    retention (7 days for failures) is the only observable signal that failures are tracked.
+
+related_surface:
+  ping_url_rule:
+    description: >-
+      Rules can fire a PING URL action, which is Ontraport's other outbound HTTP mechanism.
+      Since 2019-07-11 creating or updating that action requires only a Webhook ID; the old
+      url, post_data and json_flag parameters are deprecated.
+    source: https://api.ontraport.com/doc/#api-change-log
+
+gaps:
+- No AsyncAPI or other machine-readable event schema.
+- Only four events, all contact/tag/form-shaped — no commerce, task or automation events.
+- No payload verification mechanism of any kind.
+- No published retry or delivery-guarantee policy.

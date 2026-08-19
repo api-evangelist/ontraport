@@ -1,0 +1,126 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://api.ontraport.com/doc/ (PHP SDK examples throughout the reference),
+  https://github.com/Ontraport, https://packagist.org/packages/ontraport/sdk-php,
+  registry.npmjs.org, rubygems.org, pypi.org
+description: >-
+  Ontraport publishes exactly one first-party client library: a PHP SDK. It is the SDK the
+  entire REST reference is written against — every endpoint on https://api.ontraport.com/doc/
+  carries a PHP example using it — and it is the only package Ontraport maintains. Its last
+  release was v1.2.2 on 2022-09-28, which predates seven documented API changes (Tag
+  Subscribers, getByUniqueId, the count parameter, Invoices/Payments/payInvoice, coupon
+  codes on manual transactions and two Calendar guest parameters) shipped between 2023 and
+  June 2026. There is no first-party JavaScript, Python, Ruby, Go, Java, .NET or Rust
+  client. Everything on npm and RubyGems under the Ontraport name is community-authored and
+  abandoned, the newest of them dating to 2021.
+summary:
+  official_count: 1
+  community_count: 6
+  languages_official:
+  - php
+  languages_missing:
+  - javascript
+  - python
+  - ruby
+  - go
+  - java
+  - dotnet
+  - rust
+  newest_official_release: '2022-09-28'
+  decay_note: >-
+    The only first-party SDK is 3 years and 10 months stale as of this pass, against an API
+    whose own changelog records changes as recently as 2026-06-10.
+
+packages:
+- name: ontraport/sdk-php
+  language: php
+  registry: packagist
+  official: true
+  url: https://packagist.org/packages/ontraport/sdk-php
+  repo: https://github.com/Ontraport/SDK-PHP
+  version: 1.2.2
+  published: '2022-09-28'
+  license: MIT
+  downloads_total: 424572
+  maintainers:
+  - ontraport-engineering
+  - arielle-ontraport
+  note: >-
+    The library the official REST documentation is written against. Registry metadata read
+    from packagist.org/packages/ontraport/sdk-php.json on 2026-08-13. GitHub repo last
+    pushed 2023-04-11, 19 stars. Version numbering is explained in the API change log:
+    minor increment for bug fixes, middle increment for new wrappers/models, whole version
+    increment for breaking changes.
+- name: Ontraport/ontra_api_examples
+  language: php
+  registry: none
+  official: true
+  url: https://github.com/Ontraport/ontra_api_examples
+  version: null
+  published: '2015-03-12'
+  note: >-
+    First-party API example code, not a distributed package — no registry entry exists, so
+    there is no version to record. Last pushed 2015-03-12.
+- name: ontraport
+  language: javascript
+  registry: npm
+  official: false
+  url: https://www.npmjs.com/package/ontraport
+  version: 1.2.2
+  published: '2016-06-23'
+  author: Matthew Shipman
+  note: >-
+    Community wrapper. Holds the unscoped `ontraport` name on npm despite not being
+    Ontraport's; no repository field, last published 2016-06-23.
+- name: ontraport
+  language: ruby
+  registry: rubygems
+  official: false
+  url: https://rubygems.org/gems/ontraport
+  version: 0.1.21
+  published: '2017-09-06'
+  author: Hamza Tayeb
+  license: MIT
+  downloads_total: 13109
+  note: >-
+    Community gem that points readers at https://api.ontraport.com/doc/ in its own
+    description. Not maintained by Ontraport.
+- name: '@thesatoshicompany/ontraport-js'
+  language: typescript
+  registry: npm
+  official: false
+  url: https://www.npmjs.com/package/@thesatoshicompany/ontraport-js
+  version: 0.1.8
+  published: '2020-01-28'
+- name: '@cabemo/op'
+  language: javascript
+  registry: npm
+  official: false
+  url: https://www.npmjs.com/package/@cabemo/op
+  version: 1.0.9
+  published: '2021-01-06'
+  note: Self-described as an "Ontraport unofficial sdk for Nodejs".
+- name: dkl-ontraport
+  language: javascript
+  registry: npm
+  official: false
+  url: https://www.npmjs.com/package/dkl-ontraport
+  version: 1.0.4
+  published: '2020-03-12'
+- name: '@pipedream/ontraport'
+  language: javascript
+  registry: npm
+  official: false
+  url: https://www.npmjs.com/package/@pipedream/ontraport
+  version: 0.1.0
+  published: '2026-05-20'
+  note: >-
+    Pipedream's integration components for Ontraport, published by Pipedream. Third-party
+    platform glue rather than an Ontraport client library, but it is the only package under
+    the Ontraport name with a 2026 release.
+
+pypi:
+  searched: true
+  found: false
+  note: pypi.org/pypi/ontraport/json returns 404 — no package under this name.

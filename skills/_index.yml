@@ -1,0 +1,61 @@
+generated: '2026-08-13'
+method: generated
+source: >-
+  openapi/ontraport-objects-api-openapi.yml, openapi/ontraport-metadata-api-openapi.yml,
+  mcp/ontraport-mcp.yml, conventions/ontraport-conventions.yml,
+  errors/ontraport-problem-types.yml, rate-limits/ontraport-rate-limits.yml,
+  asyncapi/ontraport-webhooks.yml, and https://api.ontraport.com/doc/
+description: >-
+  Packaged Agent Skills for Ontraport, one per marquee flow. Each is grounded in operations
+  that exist in the captured OpenAPI or in tools Ontraport publishes on its MCP reference —
+  nothing is invented. Note that Ontraport publishes no operationIds; the operationIds
+  referenced in these skills are assigned by overlays/ and each skill also names the raw
+  METHOD + path so it stays usable without the overlay.
+skill_count: 4
+grounding:
+  openapi:
+  - openapi/ontraport-objects-api-openapi.yml
+  - openapi/ontraport-metadata-api-openapi.yml
+  mcp: mcp/ontraport-mcp.yml
+  operationids_published_by_provider: false
+skills:
+- name: ontraport-upsert-contact
+  file: skills/ontraport-upsert-contact.md
+  api: ontraport:rest-api
+  summary: >-
+    Write a contact without creating a duplicate using POST /objects/saveorupdate — the only
+    repeat-safe write on the platform, since there is no Idempotency-Key header.
+  operations:
+  - POST /objects/saveorupdate
+  - GET /objects/meta
+  - GET /object/getByEmail
+- name: ontraport-page-a-collection
+  file: skills/ontraport-page-a-collection.md
+  api: ontraport:rest-api
+  summary: >-
+    Read a whole collection without the silent 50-record truncation and without exhausting
+    the shared 180 req/min account budget.
+  operations:
+  - GET /objects/getInfo
+  - GET /objects
+  - GET /objects/meta
+- name: ontraport-subscribe-webhook
+  file: skills/ontraport-subscribe-webhook.md
+  api: ontraport:rest-api
+  summary: >-
+    Subscribe to one of the four Ontraport events, handle an unsigned payload safely, and
+    audit deliveries through the Webhook Log inside its 2/7-day retention window.
+  operations:
+  - POST /Webhook/subscribe
+  - POST /Webhook/unsubscribe
+  - GET /Webhooks
+  - GET /WebhookLogs
+- name: ontraport-connect-mcp
+  file: skills/ontraport-connect-mcp.md
+  api: ontraport:mcp
+  summary: >-
+    Connect an MCP client to https://mcp.ontraport.com, pick OAuth or the API-key header
+    fallback, and cut the tool surface down before an agent reaches the commerce tools —
+    because the single mcp:tools scope grants all 47.
+  operations:
+  - POST https://mcp.ontraport.com

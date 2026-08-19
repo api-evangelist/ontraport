@@ -1,0 +1,196 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Ontraport REST Metadata Objects API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Api-Key",
+      "value": "{{Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Objects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List objects",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ontraport.com/1/objects",
+            "params": [
+              {
+                "name": "objectID",
+                "value": "",
+                "type": "query",
+                "description": "Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "range",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Retrieves a collection of objects based on a set of parameters."
+        },
+        {
+          "info": {
+            "name": "Create object",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.ontraport.com/1/objects",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds new data to your database."
+        },
+        {
+          "info": {
+            "name": "Update object",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.ontraport.com/1/objects",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates existing object data."
+        },
+        {
+          "info": {
+            "name": "Delete object(s)",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.ontraport.com/1/objects",
+            "params": [
+              {
+                "name": "objectID",
+                "value": "",
+                "type": "query",
+                "description": "Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Permanently removes data from the database."
+        },
+        {
+          "info": {
+            "name": "Retrieve a single object by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ontraport.com/1/object",
+            "params": [
+              {
+                "name": "objectID",
+                "value": "",
+                "type": "query",
+                "description": "Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Retrieve a single object by ID"
+        },
+        {
+          "info": {
+            "name": "Save or update object",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.ontraport.com/1/objects/saveorupdate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new object or merges with an existing one if a unique field matches."
+        },
+        {
+          "info": {
+            "name": "Retrieve objects by tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ontraport.com/1/objects/tag",
+            "params": [
+              {
+                "name": "objectID",
+                "value": "",
+                "type": "query",
+                "description": "Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+              },
+              {
+                "name": "tag_id",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Retrieve objects by tag"
+        },
+        {
+          "info": {
+            "name": "Retrieve object ID by email",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ontraport.com/1/object/getByEmail",
+            "params": [
+              {
+                "name": "objectID",
+                "value": "",
+                "type": "query",
+                "description": "Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+              },
+              {
+                "name": "email",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Retrieve object ID by email"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

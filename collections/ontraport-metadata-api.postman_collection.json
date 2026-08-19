@@ -1,0 +1,328 @@
+{
+  "item": [
+    {
+      "id": "68f28ce8-6989-4cbe-a2ad-adecb30f4998",
+      "name": "Metadata",
+      "description": {
+        "content": "Object metadata and field information.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b20fbe97-ae32-4b91-b553-37671c651b4e",
+          "name": "Retrieve object field metadata",
+          "request": {
+            "name": "Retrieve object field metadata",
+            "description": {},
+            "url": {
+              "path": [
+                "objects",
+                "meta"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "objectID",
+                  "value": "<integer>",
+                  "description": "(Required) Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5184a016-1039-474f-b52f-06e785b8f9de",
+              "name": "Generic response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "objects",
+                    "meta"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "objectID",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "08e825b0-ca92-4ead-b20a-5b804fd8b0a0",
+          "name": "Retrieve collection info",
+          "request": {
+            "name": "Retrieve collection info",
+            "description": {
+              "content": "Returns collection information such as object counts.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "objects",
+                "getInfo"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "objectID",
+                  "value": "<integer>",
+                  "description": "(Required) Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "31d61376-b1c6-49c2-891f-b357e0f6a8db",
+              "name": "Generic response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "objects",
+                    "getInfo"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "objectID",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cf36b0c0-68e3-4f40-9989-0a1abeeba3c9",
+          "name": "Create custom fields and sections",
+          "request": {
+            "name": "Create custom fields and sections",
+            "description": {},
+            "url": {
+              "path": [
+                "objects",
+                "fieldeditor"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key_0\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5d731ba9-0c61-441a-8fdf-fe0f98cd00f1",
+              "name": "Generic response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "objects",
+                    "fieldeditor"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.ontraport.com/1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "48f0460a-45f4-4a78-89bd-ded9170d09a2",
+    "name": "Ontraport REST Metadata API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Ontraport's REST API exposes CRUD access to contacts, transactions, tags,\nsequences, forms, landing pages, and ecommerce objects. Authentication uses\n`Api-Key` and `Api-Appid` HTTP headers. All endpoints share a generic object\ninterface where the object type is specified via parameters.\n\n\nContact Support:\n Name: Ontraport Developer Documentation",
+      "type": "text/plain"
+    }
+  }
+}

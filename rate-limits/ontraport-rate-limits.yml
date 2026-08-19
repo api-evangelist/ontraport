@@ -1,0 +1,54 @@
+generated: '2026-08-13'
+method: searched
+source: https://api.ontraport.com/doc/#rate-limiting
+description: >-
+  Ontraport publishes a single, account-scoped rate limit and — unusually for a platform
+  this size — publishes the three response headers that carry it, so an agent can read its
+  remaining budget at runtime rather than guessing from the docs. The limit is a rolling
+  one-minute window, not a fixed calendar minute.
+limit_count: 1
+headers_published: true
+limits:
+- id: account-rolling-minute
+  scope: account
+  applies_to: all REST API endpoints
+  limit: 180
+  window: 60s
+  window_type: rolling
+  window_note: A rolling limit that resets each minute.
+  burst: null
+  exhausted_status: 429
+  exhausted_message: >-
+    Too Many Requests - You have exceeded your maximum rate limit of 180 requests per minute.
+  increase: >-
+    Ontraport states its support staff will consider reasonable requests to increase rate
+    limits on a per-account basis. No self-serve mechanism and no published tier ladder.
+  mitigation_guidance: >-
+    Ontraport's own remediation advice is to use the pagination tools (start/range on the
+    plural endpoints) and to add caching before asking for a higher limit.
+response_headers:
+- name: X-Rate-Limit-Limit
+  description: The upper limit of API requests allowed per minute.
+- name: X-Rate-Limit-Remaining
+  description: The number of requests remaining in this one-minute period.
+- name: X-Rate-Limit-Reset
+  description: The number of seconds until the rolling limit resets.
+retry_after: false
+retry_after_note: >-
+  Ontraport does not document a Retry-After header. X-Rate-Limit-Reset (seconds until
+  reset) is the equivalent runtime signal.
+standard: >-
+  Custom X-Rate-Limit-* prefix. Not the RFC 9331 / draft-ietf-httpapi-ratelimit-headers
+  `RateLimit-*` form.
+history:
+- date: '2017-12-22'
+  change: Rate limiting headers added to API responses.
+  source: https://api.ontraport.com/doc/#api-change-log
+- date: '2018-01-25'
+  change: Rate limit handling added to the PHP SDK (SDK-PHP v1.0.3).
+  source: https://api.ontraport.com/doc/#api-change-log
+mcp_note: >-
+  Ontraport's MCP server (https://mcp.ontraport.com) does not publish a separate rate limit.
+  It calls the same REST API and therefore consumes the same 180 req/min account budget —
+  which is why the provider's own MCP documentation directs bulk work to the REST API or a
+  workflow tool rather than to the agent.

@@ -1,0 +1,212 @@
+generated: '2026-08-13'
+method: searched
+source: https://api.ontraport.com/doc/#api-change-log
+description: >-
+  Ontraport maintains a dated API change log inside its REST reference, published as far
+  back as 2017 and still receiving entries in 2026. It doubles as the SDK change log —
+  entries that touch the PHP SDK are tagged with the SDK version. Ontraport also publishes
+  an RSS feed of the change log so integrators can subscribe rather than poll. The cadence
+  is the finding: 2026 has two entries, 2025 four, and the whole 2020-2022 period six —
+  this is a stable, additively-maintained API, not an actively evolving one.
+scheme:
+  api_versioning: path
+  current_version: v1
+  base_url: https://api.ontraport.com/1
+  sdk_versioning: >-
+    Documented in the change log itself: minor increment for bug fixes and small changes,
+    middle increment for new functionality such as models or new SDK wrapper classes, whole
+    version increment for large changes that may break previous working SDK versions.
+  format: dated prose entries, newest first, occasionally tagged "SDK-PHP v. X.Y.Z"
+feed:
+  rss: true
+  note: >-
+    The reference links an RSS feed of the change log and recommends subscribing rather than
+    checking daily. The feed URL is behind a redirect link on the docs page and was not
+    resolved to a stable URL in this pass.
+entries_captured: 25
+window: 2017-05-25 to 2026-06-10
+
+entries:
+- date: '2026-06-10'
+  breaking: false
+  summary: >-
+    Documented applying a coupon code to a manual transaction via transaction/processManual.
+    A new `coupon` object containing a coupon `code` can be included in the offer.
+  additions:
+  - transaction/processManual offer.coupon.code
+- date: '2026-04-09'
+  breaking: false
+  summary: >-
+    Documented Tag Subscribers (object type 138). Added an `object_type_id` query parameter
+    to GET /TagSubscribers for filtering tag subscriptions by the tag's object type.
+  additions:
+  - GET /TagSubscribers object_type_id
+- date: '2025-11-18'
+  breaking: false
+  summary: Added a getByUniqueId endpoint for retrieving an object by its Unique ID.
+  additions:
+  - getByUniqueId
+- date: '2025-08-28'
+  breaking: false
+  summary: >-
+    Added a `count` boolean parameter that, when set, includes the total number of matching
+    objects alongside the results.
+  additions:
+  - count parameter on collection reads
+- date: '2025-03-19'
+  breaking: false
+  summary: >-
+    Added new fields for generating Invoices, added the Payment object, and added a new
+    Transaction/payInvoice endpoint.
+  additions:
+  - Payment object
+  - Transaction/payInvoice
+- date: '2025-01-02'
+  breaking: false
+  summary: >-
+    Added an `advanced_ids` parameter to Calendar/removeGuest allowing removal by Advanced
+    Event ID instead of composite id.
+- date: '2024-12-30'
+  breaking: false
+  summary: >-
+    Added an `advanced_ids` parameter to Calendar/updateGuestStatus allowing guest status
+    change by Advanced Event ID instead of composite id.
+- date: '2023-09-28'
+  breaking: false
+  summary: >-
+    Added a `create_open_order_on_decline` parameter to Transaction/processManual determining
+    whether an open order is created when a non-zero today-charge declines. Previously an
+    open order was always created.
+  behavior_change: true
+- date: '2023-08-07'
+  breaking: false
+  summary: >-
+    The `cctoken` subfield of `payer` can be used when creating a manual transaction to
+    specify a Stripe Token instead of an actual credit card number.
+- date: '2023-08-02'
+  breaking: true
+  summary: >-
+    The `sku` field is no longer populated. Deprecated and removed from the response data of
+    the GET /Purchases endpoints.
+  removals:
+  - Purchases.sku
+- date: '2023-05-31'
+  breaking: false
+  summary: >-
+    Exposed GET /WebhookLog and the GET /WebhookLogs, /WebhookLogs/meta and
+    /WebhookLogs/getInfo endpoints.
+- date: '2022-06-03'
+  breaking: false
+  summary: >-
+    Documented image fields, including rehosting behaviour and a request/response example.
+- date: '2022-04-13'
+  breaking: true
+  summary: >-
+    Changed the invalid-email response for Objects/getByEmail from a 400 to a 404.
+- date: '2021-12-08'
+  breaking: false
+  summary: Documented the list-type field.
+- date: '2020-02-06'
+  breaking: false
+  summary: >-
+    Added a section documenting all Groups API calls, and a section listing most field types
+    and how to use them.
+- date: '2020-01-09'
+  breaking: false
+  summary: >-
+    Added integer field `group_id` to replace `group_ids`, reflecting that a collection can
+    only be limited by a single group at a time. `group_ids` is no longer documented but
+    continues to function.
+  deprecations:
+  - group_ids
+- date: '2019-10-22'
+  breaking: false
+  summary: >-
+    The `num_purchased` field is deprecated and will be removed from response data in the
+    future.
+  deprecations:
+  - num_purchased
+- date: '2019-10-22'
+  breaking: false
+  summary: >-
+    Added a 422 response code, returned when email address fields are sent invalid addresses.
+- date: '2019-10-02'
+  breaking: true
+  summary: >-
+    Conversion Rate field semantics changed. `unique_lpconvert` now holds the raw percentage
+    Conversion Rate for Landing Pages rather than the number of conversions; new field
+    `unique_convert` replaces `unique_fillouts` for NG Field Aliases and holds the raw
+    percentage for Forms.
+- date: '2019-07-11'
+  breaking: true
+  summary: >-
+    Creating or updating the Rule action PING URL now requires only a Webhook ID. The old
+    url, post_data and json_flag parameters are deprecated.
+  deprecations:
+  - PING URL url
+  - PING URL post_data
+  - PING URL json_flag
+- date: '2018-06-27'
+  breaking: false
+  summary: >-
+    Added the `unique_id` field to ORM objects. Not editable, but can be sent with update or
+    saveorupdate requests to indicate which object's data should be updated.
+- date: '2018-06-21'
+  breaking: false
+  summary: >-
+    Added the Objects/fieldeditor endpoint for adding and removing fields and sections on
+    objects.
+- date: '2018-03-06'
+  breaking: false
+  summary: >-
+    Exposed GET /Webhooks and the Webhook/subscribe and Webhook/unsubscribe endpoints.
+    Allowed subscribing to object_create, sub_tag, unsub_tag and object_submits_form.
+- date: '2017-12-22'
+  breaking: false
+  summary: Added rate limiting headers to API responses.
+- date: '2017-05-25'
+  breaking: true
+  summary: >-
+    Old fields removed from API responses across Contacts, Tasks, Landingpages, Forms and
+    Transactions. Old documentation moved to https://api.ontraport.com/live.
+  removals:
+  - Contacts.notes
+  - Contacts.status
+  - Contacts.category
+  - Contacts.lead_source
+  - Contacts.visits
+  - Contacts.lastvisit
+  - Contacts.lastaction
+  - Contacts.referer
+  - Tasks.history
+  - Tasks.flags
+  - Tasks.notify_manager
+  - Tasks.notes
+  - Landingpages.platform
+  - Forms.fields
+  - Forms.fieldoptions
+  - Forms.fieldsrequired
+  - Forms.form_format
+  - Forms.raw_data
+  - Forms.attach
+  - Transactions.transaction_id
+
+notices:
+- date: '2018-12-18'
+  summary: >-
+    Notice that beginning 2019-02-01, Ontraport package-level permissions and user
+    permissions would apply to API requests, and that credential owners' permissions must
+    align with the integration's needs.
+  impact: >-
+    This is the single largest behaviour change in the log — it made an API key's effective
+    surface a function of the owning user's in-app permissions.
+
+cadence:
+  entries_2026: 2
+  entries_2025: 4
+  entries_2024: 1
+  entries_2023: 4
+  entries_2022: 2
+  observation: >-
+    Additive maintenance only since 2023. The last change described as breaking is the
+    2023-08-02 removal of Purchases.sku.

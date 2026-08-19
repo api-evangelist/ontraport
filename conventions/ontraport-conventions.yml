@@ -1,0 +1,205 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://api.ontraport.com/doc/ (authentication, rate limiting, object identifiers, plural
+  and singular endpoints, pagination, criteria, response format, error and response codes
+  sections), cross-referenced with openapi/ontraport-objects-api-openapi.yml and
+  openapi/ontraport-metadata-api-openapi.yml
+description: >-
+  The cross-cutting runtime semantics of the Ontraport REST API in one place: how a client
+  authenticates, how it pages, how it makes a write repeat-safe, what an error looks like,
+  and what the API does NOT provide. Ontraport's API is unusual in shape — it is a single
+  generic object interface where the resource is selected by an objectID parameter rather
+  than by a path segment, with named convenience aliases layered on top.
+
+authentication:
+  style: dual-header api key
+  headers:
+  - name: Api-Key
+    required: true
+    description: >-
+      The account's unique API key. Must be used together with the App ID or the request
+      will not authenticate.
+  - name: Api-Appid
+    required: true
+    description: The account's unique site/App ID.
+  oauth: false
+  oauth_note: >-
+    The REST API has no OAuth. OAuth 2.1 exists only on the MCP surface
+    (https://mcp.ontraport.com, authorization server https://app.ontraport.com, single scope
+    mcp:tools). See scopes/ontraport-scopes.yml and authentication/ontraport-authentication.yml.
+  permissions: >-
+    Since 2019-02-01, Ontraport package-level and user-level permissions apply to API
+    requests. The effective surface of a key is bounded by the permissions of the user who
+    owns it, not just by the plan.
+  rotation: not documented
+  scopes: none
+  see: authentication/ontraport-authentication.yml
+
+resource_addressing:
+  style: generic-object-interface
+  description: >-
+    Most operations act on /objects or /object and take an objectID (object type ID)
+    parameter that selects the resource — Contact is 0, Task 1, Note 12, Tag 14, Product 16,
+    Deals 149, Companies 150, custom objects >= 10000. The same endpoints also have named
+    aliases (/Contact, /Contacts, /Transactions ...) documented per resource.
+  identifiers:
+    object_type_id: >-
+      Identifies the TYPE. All objects of the same type share it (every contact is type 0).
+    id: >-
+      Identifies the specific record. Unique within a type.
+    unique_id: >-
+      Added 2018-06-27 to ORM objects. Not editable, but can be sent with update or
+      saveorupdate to select which object to update. A getByUniqueId endpoint was added
+      2025-11-18.
+  see: data-model/ontraport-data-model.yml
+
+plural_vs_singular:
+  rule: >-
+    Singular endpoints (/Contact) retrieve or delete ONE object by ID and return every
+    field. Plural endpoints (/Contacts) operate on collections, accept pagination and
+    criteria, and let the caller name exactly which fields to return.
+  guidance: >-
+    Ontraport's own advice is to prefer plural endpoints with pagination and criteria to
+    minimise call count against the 180/min budget, and to use singular endpoints only when
+    fetching or deleting one known record.
+
+pagination:
+  style: offset
+  params:
+    offset: start
+    limit: range
+  default_page_size: 50
+  max_page_size: 50
+  hard_limit_note: >-
+    Collection reads default to the maximum of 50. Without paginating, a caller only ever
+    sees the first 50 objects of any collection — a silent truncation, not an error.
+  count:
+    endpoint: GET /objects/getInfo
+    field: data.count
+    note: >-
+      A `count` boolean parameter was added 2025-08-28 that returns the total number of
+      matching objects alongside the results, removing the second call in most cases.
+  cursor: false
+  link_header: false
+  calendar_exception: >-
+    Calendar events do not use `range`. Page size is fixed by the `mode` parameter and
+    paging is driven by moving the start timestamp; one mode does not paginate at all.
+
+filtering:
+  param: condition
+  format: >-
+    JSON array of {field, op, value} clauses, e.g.
+    [{"field":{"field":"email"},"op":"=","value":{"value":"test@test.com"}}]
+  helper: >-
+    The MCP tool build_api_condition converts a human-readable condition into this raw
+    format — Ontraport's documented path for translating a segment into something the REST
+    API or a workflow tool can execute at scale.
+  group_filter:
+    param: group_id
+    note: >-
+      Replaced group_ids on 2020-01-09. A collection can only be limited by a single group
+      at a time; group_ids is undocumented but still functions.
+  field_selection:
+    supported: true
+    note: Plural endpoints accept a list of fields to return. Singular endpoints return everything.
+
+idempotency:
+  header: null
+  supported: true
+  mechanism: unique-field-match
+  operation: POST /objects/saveorupdate
+  description: >-
+    Ontraport has no Idempotency-Key header and no request-replay cache. Repeat-safety is
+    achieved through an upsert: /objects/saveorupdate matches on a unique field (typically
+    email) and updates the matched record instead of creating a duplicate. Ontraport names
+    this the recommended way to add records "because it prevents duplicates", and the same
+    recommendation is repeated on the MCP surface for saveorupdate_object. Also usable with
+    unique_id to name exactly which record an update targets.
+  retention: not applicable
+  caveats:
+  - >-
+    Idempotency is per-field-match, not per-request. Two different payloads that match the
+    same unique field will both apply — the second overwrites the first.
+  - >-
+    There is no safety for non-upsert writes. A retried POST /objects after a timeout
+    creates a second record.
+  - >-
+    Commerce writes (process_transaction, pay_invoice) have no documented idempotency key,
+    which is the highest-consequence gap in the API.
+
+versioning:
+  scheme: path
+  current: v1
+  path: /1
+  base_url: https://api.ontraport.com/1
+  breaking_change_policy: not published
+  note: >-
+    One version since the API was published. No version negotiation header, no dated
+    versions, no parallel version live. Changes are additive and announced in the change log.
+  see: lifecycle/ontraport-lifecycle.yml
+
+error_envelope:
+  content_type: application/json
+  shape: '{code, data, account_id}'
+  success_code: 0
+  rfc9457: false
+  see: errors/ontraport-problem-types.yml
+
+rate_limit_signaling:
+  headers:
+  - X-Rate-Limit-Limit
+  - X-Rate-Limit-Remaining
+  - X-Rate-Limit-Reset
+  exhausted_status: 429
+  retry_after: false
+  see: rate-limits/ontraport-rate-limits.yml
+
+request_tracing:
+  request_id_header: null
+  correlation: >-
+    No request-id or trace header is documented on requests or responses. The only
+    per-account audit trail is in-product: the Automation Log Items object (type ID 100) and
+    the Webhook Log, whose GET /WebhookLog, /WebhookLogs, /WebhookLogs/meta and
+    /WebhookLogs/getInfo endpoints were exposed 2023-05-31. Neither is an HTTP-level
+    correlation id.
+
+content_negotiation:
+  request:
+  - application/x-www-form-urlencoded
+  - application/json
+  response:
+  - application/json
+  note: >-
+    The published webhook subscribe example posts form-encoded data; object writes are
+    documented with JSON bodies.
+
+field_types:
+  documented: true
+  url: https://api.ontraport.com/doc/#field-types
+  note: >-
+    A field-types section was added 2020-02-06 documenting most field types and what to
+    expect back. Image fields have documented rehosting behaviour (2022-06-03). List-type
+    fields documented 2021-12-08.
+
+expansion:
+  supported: false
+  note: >-
+    No ?expand= / sparse-fieldset mechanism. Related records are fetched through the join
+    objects (Tag Subscribers 138, Sequence Subscribers 8, Custom Object Relationships 102)
+    in separate calls.
+
+metadata:
+  custom_fields: true
+  note: >-
+    Accounts add custom fields and whole custom objects (type IDs >= 10000). Field discovery
+    is GET /objects/meta; schema mutation is POST /objects/fieldeditor. There is no free-form
+    `metadata` map — everything is a declared field, which means an agent MUST call
+    /objects/meta before writing to an unknown account.
+
+gaps:
+- No Idempotency-Key header on any write, including payment processing.
+- No request-id or trace header for correlating a failure with support.
+- No cursor pagination; offset paging over accounts with millions of contacts.
+- No webhook signature or shared secret documented for verifying inbound webhook payloads.
+- No sandbox or test mode — all keys are live keys against live data.

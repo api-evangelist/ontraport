@@ -1,0 +1,113 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://api.ontraport.com/doc/#error-and-response-codes and
+  https://api.ontraport.com/doc/#response-format. NOT derivable from the captured OpenAPI:
+  all 11 operations in openapi/ontraport-objects-api-openapi.yml and
+  openapi/ontraport-metadata-api-openapi.yml declare a '200' response and nothing else, so
+  every entry below comes from the prose reference.
+description: >-
+  Ontraport does not use RFC 9457 problem+json. It returns a plain application/json envelope
+  on every call — success or failure — carrying a `code` integer, a `data` payload and an
+  `account_id`, with the HTTP status doing the real signalling. A `code` of 0 means the call
+  succeeded with HTTP 200. There is no error `type` URI, no machine-readable error slug, and
+  no per-field validation detail beyond the 422 case, so an agent must branch on HTTP status
+  rather than on a stable error identifier.
+format: custom-json-envelope
+rfc9457: false
+content_type: application/json
+error_count: 7
+
+envelope:
+  fields:
+  - name: code
+    type: integer
+    description: >-
+      Indicates success or failure of the call. 0 indicates an HTTP 200 successful call.
+  - name: data
+    type: object
+    description: Object-specific attributes and data.
+  - name: account_id
+    type: integer
+    description: ID of the account making the API call.
+  note: >-
+    Ontraport's reference states "Click here to see a full listing of possible codes" for
+    the `code` field but the linked listing is not served as a machine-readable document.
+    Only the HTTP-level codes below are published in a form this pipeline can capture.
+
+problem_types:
+- status: 200
+  title: OK
+  detail: Your request was completed successfully.
+  code: 0
+  retryable: false
+- status: 400
+  title: Bad Request
+  detail: Your request data is not properly formed.
+  retryable: false
+  remediation: >-
+    Check the shape of the condition JSON, the objectID/object type ID, and the field names
+    against GET /objects/meta before retrying. A malformed request will fail identically on
+    retry.
+- status: 401
+  title: Unauthorized
+  detail: You are not authenticated.
+  retryable: false
+  remediation: >-
+    Both Api-Key and Api-Appid headers must be present and must belong to the same account.
+    Sending one without the other fails. On the MCP surface the same condition returns a
+    Bearer challenge naming
+    https://mcp.ontraport.com/.well-known/oauth-protected-resource.
+- status: 403
+  title: Forbidden
+  detail: You do not have permissions to access this resource.
+  retryable: false
+  remediation: >-
+    Since 2019-02-01 Ontraport package-level and user-level permissions apply to API
+    requests. Check the permissions of the user who owns the API credentials, and check the
+    object's Access column in the Accessible Objects table — many object types are GET-only.
+- status: 404
+  title: Not Found
+  detail: You are requesting a resource that does not exist.
+  retryable: false
+  remediation: >-
+    Also returned by GET /object/getByEmail for an invalid email address — this was changed
+    from a 400 to a 404 on 2022-04-13.
+- status: 422
+  title: Unprocessable Entity
+  detail: >-
+    One or more of the fields you included were not able to be processed. Currently used for
+    invalid email addresses.
+  retryable: false
+  remediation: Validate the email address before resubmitting. Added 2019-10-22.
+- status: 429
+  title: Too Many Requests
+  detail: >-
+    You have exceeded your maximum rate limit of 180 requests per minute.
+  retryable: true
+  remediation: >-
+    Read X-Rate-Limit-Reset for the number of seconds until the rolling window resets and
+    back off for that long. See rate-limits/ontraport-rate-limits.yml.
+- status: 500
+  title: Internal Server Error
+  detail: Something has gone wrong on the website's server.
+  retryable: true
+  remediation: Retry with backoff; check https://ontraport.com/service-status.
+
+gaps:
+- >-
+  No RFC 9457 problem+json, no error `type` URI and no stable error slug — an agent cannot
+  distinguish two different 400s programmatically.
+- >-
+  The 422 carries no per-field error array; the reference says only that it is "currently
+  used for invalid email addresses".
+- >-
+  The full listing of `code` values referenced in the response-format section is not
+  published as a machine-readable document.
+- >-
+  No 409 or documented conflict semantics, which matters because
+  POST /objects/saveorupdate is the provider-recommended upsert.
+- >-
+  Not one of the 11 operations in the captured OpenAPI declares a single 4xx or 5xx
+  response, so a generated client or an agent reading the spec alone has no error contract
+  at all — the seven statuses above exist only in prose.

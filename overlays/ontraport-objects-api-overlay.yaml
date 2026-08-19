@@ -1,0 +1,104 @@
+overlay: 1.0.0
+info:
+  title: Ontraport Objects API — API Evangelist enhancements
+  version: 1.0.0
+  x-generated: '2026-08-13'
+  x-method: generated
+  x-source: >-
+    Enhancements derived from Ontraport's published REST documentation at
+    https://api.ontraport.com/doc/ (authentication headers, 180 req/min rolling rate limit
+    and its X-Rate-Limit-* response headers, documented HTTP status codes, start/range
+    pagination) plus the object-type table on the same page. Extends
+    openapi/ontraport-objects-api-openapi.yml. The original OpenAPI is never mutated.
+extends: ../openapi/ontraport-objects-api-openapi.yml
+actions:
+- target: $.info
+  description: Add contact, license-free terms link and rate-limit summary to the API description.
+  update:
+    x-api-evangelist:
+      docs: https://api.ontraport.com/doc/
+      console: https://api.ontraport.com/live/
+      changelog: https://api.ontraport.com/doc/#api-change-log
+      rate_limit: 180 requests per minute per account, rolling
+      support: https://ontraport.com/support
+- target: $
+  description: >-
+    Declare the rate-limit response headers Ontraport documents on every response, and the
+    account-scoped rate-limit policy, at the document root as vendor extensions.
+  update:
+    x-rate-limit:
+      scope: account
+      limit: 180
+      window: 60s
+      rolling: true
+      headers:
+      - X-Rate-Limit-Limit
+      - X-Rate-Limit-Remaining
+      - X-Rate-Limit-Reset
+      exhausted_status: 429
+    x-response-envelope:
+      fields:
+      - name: code
+        type: integer
+        description: 0 indicates an HTTP 200 successful call.
+      - name: data
+        type: object
+        description: Object-specific attributes and data.
+      - name: account_id
+        type: integer
+        description: ID of the account making the API call.
+- target: $.paths['/objects'].get
+  description: Assign a stable operationId and document start/range pagination semantics.
+  update:
+    operationId: listObjects
+    x-pagination:
+      style: offset
+      params:
+        offset: start
+        limit: range
+      default_page_size: 50
+      max_page_size: 50
+      count_endpoint: GET /objects/getInfo
+- target: $.paths['/objects'].post
+  description: Assign a stable operationId.
+  update:
+    operationId: createObject
+- target: $.paths['/objects'].put
+  description: Assign a stable operationId.
+  update:
+    operationId: updateObject
+- target: $.paths['/objects'].delete
+  description: Assign a stable operationId and flag the destructive scope.
+  update:
+    operationId: deleteObjects
+    x-destructive: true
+- target: $.paths['/object'].get
+  description: Assign a stable operationId.
+  update:
+    operationId: getObject
+- target: $.paths['/objects/saveorupdate'].post
+  description: >-
+    Assign a stable operationId and record that this is the upsert Ontraport recommends as
+    the default write path because it matches on a unique field and prevents duplicates.
+  update:
+    operationId: saveOrUpdateObject
+    x-idempotency:
+      supported: true
+      mechanism: unique-field-match
+      note: >-
+        Ontraport does not support an Idempotency-Key header. Repeat-safety is achieved by
+        matching on a unique field (typically email) so a replayed create becomes an update.
+        This is the provider's own recommended pattern for maintaining data integrity.
+- target: $.paths['/objects/tag'].get
+  description: Assign a stable operationId.
+  update:
+    operationId: getObjectsByTag
+- target: $.paths['/object/getByEmail'].get
+  description: >-
+    Assign a stable operationId and record the documented 2022-04-13 change from 400 to 404
+    for an invalid email.
+  update:
+    operationId: getObjectByEmail
+    x-changelog:
+    - date: '2022-04-13'
+      change: Invalid email response changed from a 400 to a 404.

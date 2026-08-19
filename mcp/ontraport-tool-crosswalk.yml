@@ -1,0 +1,274 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  mcp/ontraport-mcp.yml (tool names + descriptions transcribed from
+  https://ontraport.com/support/My-account/mcp-server), openapi/ontraport-objects-api-openapi.yml,
+  openapi/ontraport-metadata-api-openapi.yml, and the endpoint reference at
+  https://api.ontraport.com/doc/
+description: >-
+  Binds each Ontraport MCP tool to the REST operation(s) that back it. Ontraport's MCP
+  server is explicitly described by the provider as a translation layer over the Ontraport
+  REST API, so most tools have a real REST ancestor — but the mapping is deliberately
+  lopsided: the captured OpenAPI covers only the GENERIC object interface (/objects,
+  /object, /objects/meta ...), while the MCP surface is dominated by purpose-built tools
+  that wrap named REST resources documented in prose (Transaction/processManual,
+  Webhook/subscribe, Calendar/*, objects/tag ...) and were never captured as machine-readable
+  operations. Every one of those is recorded here honestly rather than being force-mapped.
+
+surfaces:
+  openapi:
+  - file: openapi/ontraport-objects-api-openapi.yml
+    operations: 8
+    note: >-
+      No operationIds are published by Ontraport. Stable operationIds are assigned by
+      overlays/ontraport-objects-api-overlay.yaml and are used below, marked as
+      overlay-assigned.
+  - file: openapi/ontraport-metadata-api-openapi.yml
+    operations: 3
+    note: operationIds assigned by overlays/ontraport-metadata-api-overlay.yaml.
+  graphql: null
+  mcp:
+    url: https://mcp.ontraport.com
+    gated: true
+    note: >-
+      tools/list returns 401 with an RFC 9728 Bearer challenge. Tool names and descriptions
+      come from the provider's published reference; inputSchemas are not public.
+  rest_reference: https://api.ontraport.com/doc/
+
+coverage:
+  mcp_tools: 47
+  openapi_operations: 11
+  mapped: 12
+  mcp_only: 35
+  rest_only: 2
+  confidence_note: >-
+    No mapping is rated high. The MCP schemas are gated and the OpenAPI carries no
+    operationIds, so every binding is name-and-semantics based against the provider's own
+    prose. Ratings are medium where the tool and the operation are the same documented
+    action on the same generic object interface, low where the tool clearly wraps a named
+    REST resource that exists in the docs but not in the captured spec.
+
+crosswalk:
+- tool: get_objects
+  category: crud
+  rest:
+  - listObjects
+  - getObject
+  binding: generic-object-interface
+  confidence: medium
+  note: >-
+    Fetch by ID maps to GET /object (getObject); fetch by condition or ID list maps to
+    GET /objects (listObjects) with the documented condition/start/range parameters.
+- tool: create_object
+  category: crud
+  rest:
+  - createObject
+  binding: direct
+  confidence: medium
+- tool: update_object
+  category: crud
+  rest:
+  - updateObject
+  binding: direct
+  confidence: medium
+- tool: saveorupdate_object
+  category: crud
+  rest:
+  - saveOrUpdateObject
+  binding: direct
+  confidence: medium
+  note: >-
+    POST /objects/saveorupdate. Both surfaces name this the recommended write path because
+    it matches on a unique field and prevents duplicates.
+- tool: delete_object
+  category: crud
+  rest:
+  - deleteObjects
+  binding: direct
+  confidence: medium
+  note: DELETE /objects with a single id.
+- tool: delete_objects
+  category: crud
+  rest:
+  - deleteObjects
+  binding: direct
+  confidence: medium
+  note: >-
+    DELETE /objects with an id list or condition. The MCP server adds a guard the REST
+    surface does not have — a request to delete every record in a collection is ignored.
+- tool: get_object_meta
+  category: query
+  rest:
+  - getObjectMeta
+  binding: direct
+  confidence: medium
+  note: GET /objects/meta.
+- tool: count_objects
+  category: query
+  rest:
+  - getCollectionInfo
+  binding: direct
+  confidence: medium
+  note: >-
+    GET /objects/getInfo returns data.count. The 2025-08-28 changelog entry adds a `count`
+    boolean to collection reads, which the tool may also use for the sums/averages variant.
+- tool: build_api_condition
+  category: query
+  rest:
+  - listObjects
+  binding: helper
+  confidence: medium
+  note: >-
+    Produces the raw condition JSON that the `condition` parameter of the plural endpoints
+    consumes. It calls nothing itself — it exists so the operator can hand a segment to the
+    REST API or a workflow tool for bulk execution.
+- tool: manage_tags
+  category: manage
+  rest:
+  - getObjectsByTag
+  binding: partial
+  confidence: low
+  note: >-
+    The read half maps to GET /objects/tag. The write half (add/remove a tag by ID or name)
+    is served by the documented objects/tag and objects/tagByName endpoints, which are
+    described in prose at https://api.ontraport.com/doc/ but are not in the captured spec.
+- tool: list_allowed_object_types
+  category: query
+  rest: []
+  binding: none
+  confidence: low
+  note: >-
+    Semantically the MCP equivalent of the Accessible Objects table published at
+    https://api.ontraport.com/doc/#accessible-objects, filtered to what MCP can reach. No
+    REST operation in the captured spec returns this list.
+- tool: get_account_info
+  category: query
+  rest: []
+  binding: none
+  confidence: low
+  note: >-
+    Returns account number, timezone and configuration. No equivalent operation in the
+    captured spec; not clearly a documented REST endpoint either.
+
+mcp_only:
+- tool: get_groups
+  reason: >-
+    Wraps the Groups object (type ID 3), documented as a REST resource at
+    https://api.ontraport.com/doc/ but not present in the captured generic-object spec.
+- tool: get_subscribers
+  reason: >-
+    Composite read across the Tag Subscribers (138), Sequence Subscribers (8) and Open
+    Orders (44) join objects. No single REST operation returns it.
+- tool: get_contact_log
+  reason: Wraps the Log Items object (type ID 4); not in the captured spec.
+- tool: get_automation_log
+  reason: Wraps the Automation Log Items object (type ID 100); not in the captured spec.
+- tool: get_recent_messages
+  reason: >-
+    Wraps the Messages object (type ID 7) joined to engagement stats (opens, clicks). Not a
+    single documented REST operation.
+- tool: get_recent_notes
+  reason: Wraps the Notes object (type ID 12) with author resolution; not in the captured spec.
+- tool: get_recent_tasks
+  reason: >-
+    Wraps the Tasks object (type ID 1) with assignee-name resolution and status filtering.
+- tool: get_task_form_requirements
+  reason: >-
+    Returns the required form fields for completing a specific task. No public REST
+    equivalent; exists because complete_task can fail on missing fields.
+- tool: get_scheduled_broadcasts
+  reason: Wraps the Scheduled Broadcasts object (type ID 23); not in the captured spec.
+- tool: get_landing_page_url
+  reason: >-
+    Resolves the hosted URL of a Landing Page (type ID 20) by name or ID — a lookup, not a
+    documented REST operation.
+- tool: manage_subscriptions
+  reason: >-
+    Composite: wraps the documented objects/subscribe and objects/unsubscribe endpoints
+    across Sequences (5) and Automations (140). Not in the captured spec.
+- tool: manage_relationships
+  reason: >-
+    Wraps the Custom Object Relationships object (type ID 102). State-transition logic, not
+    a generic CRUD call.
+- tool: assign_task
+  reason: Task creation with assignment; REST Task writes are documented in prose only.
+- tool: complete_task
+  reason: >-
+    Enforces a valid task state transition and records an outcome from the Task Outcomes
+    reference list (type ID 66). Business logic the REST surface leaves to the caller.
+- tool: cancel_task
+  reason: Task state transition; no captured REST operation.
+- tool: reschedule_task
+  reason: Task state transition; no captured REST operation.
+- tool: pause_unpause_objects
+  reason: >-
+    Pauses or resumes Sequences (5), Rules (6) and Automations (140). State transition, not
+    a field update.
+- tool: get_invoices
+  reason: Wraps the Invoices object (type ID 46); generic writes are disabled for this type.
+- tool: get_purchases
+  reason: Wraps the Purchases object (type ID 17); not in the captured spec.
+- tool: get_failed_transactions
+  reason: Filtered invoice read (declined/overdue); no REST equivalent.
+- tool: get_payments
+  reason: >-
+    Listed against the Payments object (type ID 227) in the Available Objects section but
+    absent from the tool table on the same page. Documented-but-unconfirmed.
+- tool: create_invoice
+  reason: Commerce write; Invoices accept writes only through specialized tools.
+- tool: update_invoice
+  reason: Commerce write, including the draft-to-open state transition.
+- tool: pay_invoice
+  reason: >-
+    Corresponds to the Transaction/payInvoice endpoint added in the 2025-03-19 changelog
+    entry; documented in prose, not in the captured spec.
+- tool: send_invoice
+  reason: Commerce action; refuses drafts. No captured REST operation.
+- tool: process_transaction
+  reason: >-
+    Corresponds to the documented Transaction/processManual endpoint (gateway charge). Not
+    in the captured spec.
+- tool: log_offline_purchase
+  reason: >-
+    Offline transaction logging. Referred to as log_offline_transaction in the Available
+    Objects section of the same page.
+- tool: mark_transaction_paid
+  reason: Ledger state transition with no charge processed.
+- tool: rerun_transaction
+  reason: >-
+    Retry of a failed charge. Related to the documented decline-recovery behaviour and the
+    2023-09-28 create_open_order_on_decline parameter.
+- tool: refund_transaction
+  reason: Settled-charge reversal; gateway-side action.
+- tool: void_transaction
+  reason: Unsettled-charge reversal; gateway-side action.
+- tool: write_off_transaction
+  reason: Ledger write-off state transition.
+- tool: convert_transaction
+  reason: >-
+    Converts an invoice to collections or declined status — the documented
+    convert-to-collections / convert-to-declined actions.
+- tool: cancel_subscription
+  reason: >-
+    Cancels an active recurring order (Orders type ID 52 / Open Orders 44). State
+    transition, not a delete.
+- tool: update_order
+  reason: >-
+    Updates price, quantity or billing frequency on a recurring order. Orders accept updates
+    only through this tool.
+- tool: validate_offer
+  reason: Configuration validation of an Offer (type ID 65); no REST equivalent.
+
+rest_only:
+- operation: getObjectByEmail
+  file: openapi/ontraport-objects-api-openapi.yml
+  path: GET /object/getByEmail
+  note: >-
+    No dedicated MCP tool. The equivalent agent path is saveorupdate_object / get_objects
+    with an email unique-field match.
+- operation: editObjectFields
+  file: openapi/ontraport-metadata-api-openapi.yml
+  path: POST /objects/fieldeditor
+  note: >-
+    Schema-mutating (adds/removes fields and sections on an object). Deliberately absent
+    from the MCP surface — no tool lets an agent alter the account's data model.

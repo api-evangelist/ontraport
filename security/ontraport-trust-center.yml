@@ -1,0 +1,89 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://ontraport.com/features/platform/security-and-scalability/ and
+  https://ontraport.com/legal
+description: >-
+  Ontraport has no trust center — no trust.ontraport.com, no Vanta/Drata/SafeBase portal, no
+  downloadable attestation, no sub-processor page reachable from the public site. What it
+  has is a marketing security page and a legal page, which between them carry two named
+  compliance claims: PCI DSS Level 1 certification and GDPR compliance as a data processor.
+  Both are self-asserted prose. This file records those claims and their evidence; it does
+  not upgrade them.
+trust_center:
+  exists: false
+  url: null
+  probed:
+  - url: https://trust.ontraport.com
+    result: redirects to https://ontraport.com/service-status (the Statuspage link), not a trust portal
+  - url: https://ontraport.com/security
+    status: 404
+  platform: none
+certifications:
+- name: PCI DSS
+  level: Level 1
+  status: claimed
+  claim: >-
+    "Ontraport meets the highest level of security – PCI-DSS Level 1 Certification"
+  source: https://ontraport.com/features/platform/security-and-scalability/
+  corroboration: >-
+    A "PCI DSS, Level 1" badge appears in the site footer across ontraport.com pages.
+  attestation_published: false
+  qsa: not named
+  attestation_date: not published
+  note: >-
+    Credible for a platform that processes card payments through its own gateway integrations
+    and describes an isolated payment-processing system, but it is a self-assertion — no AOC
+    or ROC summary is downloadable.
+- name: GDPR
+  role: data processor
+  status: claimed
+  claim: >-
+    "Ontraport attests that we comply with GDPR as a Data Processor but does not and can not
+    ensure your compliance as a Data Controller."
+  source: https://ontraport.com/legal
+  sub_processors:
+    committed: true
+    published_url: not resolvable
+    note: >-
+      The legal page states "We maintain a list of sub-processors below for your review". The
+      list is rendered inside the accordion sections of https://ontraport.com/legal rather
+      than at a stable, linkable URL.
+not_claimed:
+- SOC 2 Type I or Type II
+- ISO/IEC 27001
+- ISO/IEC 27017 or 27018
+- HIPAA / BAA
+- FedRAMP
+- CSA STAR
+- TX-RAMP or StateRAMP
+security_practices_published:
+  source: https://ontraport.com/features/platform/security-and-scalability/
+  claims:
+  - Daily off-site backups with redundancy
+  - Multi-factor authentication (SMS, email, or social login)
+  - Role-based permission management
+  - Free SSL certificates for all hosted pages
+  - Encryption of sensitive data in transit
+  - Custom-built breach response technology
+  - Payment processing isolated from the main application
+  - 24/7 systems monitoring with automated hourly tests
+  - An in-product Automation Log tracking team actions and changes
+  - Dedicated infrastructure available on enterprise accounts
+  uptime_commitment: none published
+  data_center_locations: not published
+  pen_test_summary: not published
+  encryption_at_rest: not stated
+gaps:
+- >-
+  No SOC 2 — the single most common enterprise procurement requirement, and the one a CRM
+  holding an entire customer database is most often asked for.
+- >-
+  No trust portal, so every security question is a sales conversation rather than a
+  self-serve document.
+- >-
+  No published sub-processor list at a stable URL, despite a contractual commitment in the
+  Terms of Service to maintain one.
+- >-
+  No vulnerability disclosure policy and no security contact. See
+  security/ontraport-vulnerability-disclosure.yml.

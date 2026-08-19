@@ -1,0 +1,79 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Ontraport REST Metadata API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Api-Key",
+      "value": "{{Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Metadata",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve object field metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ontraport.com/1/objects/meta",
+            "params": [
+              {
+                "name": "objectID",
+                "value": "",
+                "type": "query",
+                "description": "Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+              }
+            ]
+          },
+          "docs": "Retrieve object field metadata"
+        },
+        {
+          "info": {
+            "name": "Retrieve collection info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ontraport.com/1/objects/getInfo",
+            "params": [
+              {
+                "name": "objectID",
+                "value": "",
+                "type": "query",
+                "description": "Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+              }
+            ]
+          },
+          "docs": "Returns collection information such as object counts."
+        },
+        {
+          "info": {
+            "name": "Create custom fields and sections",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.ontraport.com/1/objects/fieldeditor",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create custom fields and sections"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

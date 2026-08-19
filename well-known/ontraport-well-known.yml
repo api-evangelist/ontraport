@@ -1,0 +1,135 @@
+generated: '2026-08-13'
+method: probed
+source: live GET probes of every Ontraport host named in apis.yml, the OpenAPI servers[] block, and the MCP endpoint published at https://ontraport.com/support/My-account/mcp-server
+description: >-
+  Result of probing the standard /.well-known/ paths on every Ontraport host. Two
+  paths return real documents: the RFC 9728 OAuth protected-resource metadata served
+  by the Ontraport MCP server, and the RFC 8414 authorization-server metadata served
+  by the Ontraport application. Together they are the machine-readable description of
+  how an agent authorizes against Ontraport. Everything else 404s (ontraport.com,
+  mcp.ontraport.com) or is fronted by an edge that answers 502 for unknown paths
+  (api.ontraport.com) — recorded as an honest absence.
+summary:
+  hosts_probed: 4
+  paths_probed: 21
+  documents_found: 2
+  security_txt: false
+  openid_configuration: false
+  oauth_authorization_server: true
+  oauth_protected_resource: true
+  api_catalog: false
+  ai_plugin: false
+hosts:
+- host: mcp.ontraport.com
+  note: Ontraport's first-party remote MCP server.
+  paths:
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: application/json
+    document: true
+    file: well-known/ontraport-oauth-protected-resource.json
+    note: >-
+      RFC 9728 protected-resource metadata. Names https://app.ontraport.com as the
+      authorization server and mcp:tools as the only supported scope. Also returned
+      in the WWW-Authenticate header on an unauthenticated tools/list POST.
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    document: false
+  - path: /.well-known/openid-configuration
+    status: 404
+    document: false
+  - path: /.well-known/security.txt
+    status: 404
+    document: false
+  - path: /.well-known/api-catalog
+    status: 404
+    document: false
+  - path: /.well-known/agent-card.json
+    status: 404
+    document: false
+  - path: /.well-known/agent.json
+    status: 404
+    document: false
+  - path: /.well-known/mcp.json
+    status: 404
+    document: false
+  - path: /llms.txt
+    status: 404
+    document: false
+- host: app.ontraport.com
+  note: Ontraport application host; acts as the OAuth authorization server for the MCP surface.
+  paths:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    document: true
+    file: well-known/ontraport-oauth-authorization-server.json
+    note: >-
+      RFC 8414 authorization-server metadata. Authorization code + refresh token grants,
+      PKCE S256 required, dynamic client registration endpoint published, single scope
+      mcp:tools.
+  - path: /.well-known/openid-configuration
+    status: 404
+    document: false
+    note: Returns the Ontraport application's JSON 404 envelope, not an OIDC discovery document.
+- host: ontraport.com
+  paths:
+  - path: /.well-known/security.txt
+    status: 404
+    document: false
+  - path: /security.txt
+    status: 404
+    document: false
+  - path: /.well-known/openid-configuration
+    status: 404
+    document: false
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    document: false
+  - path: /.well-known/api-catalog
+    status: 404
+    document: false
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    document: false
+  - path: /.well-known/agent-card.json
+    status: 404
+    document: false
+  - path: /.well-known/agent.json
+    status: 404
+    document: false
+  - path: /llms.txt
+    status: 404
+    document: false
+- host: api.ontraport.com
+  note: >-
+    The REST API host answers 502 with an HTML error page for any path it does not route,
+    including every /.well-known/ path. Treated as a miss, not a document.
+  paths:
+  - path: /.well-known/security.txt
+    status: 502
+    document: false
+  - path: /.well-known/openid-configuration
+    status: 502
+    document: false
+  - path: /.well-known/oauth-authorization-server
+    status: 502
+    document: false
+  - path: /.well-known/oauth-protected-resource
+    status: 502
+    document: false
+  - path: /.well-known/api-catalog
+    status: 502
+    document: false
+  - path: /.well-known/ai-plugin.json
+    status: 502
+    document: false
+  - path: /.well-known/agent-card.json
+    status: 502
+    document: false
+  - path: /.well-known/agent.json
+    status: 502
+    document: false
+  - path: /llms.txt
+    status: 502
+    document: false

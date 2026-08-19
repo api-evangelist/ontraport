@@ -1,0 +1,340 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://api.ontraport.com/doc/#accessible-objects (object type IDs and per-verb access),
+  https://ontraport.com/support/My-account/mcp-server (Available objects: groupings, access
+  and the specialized tool bound to each object), and the generic object interface in
+  openapi/ontraport-objects-api-openapi.yml
+description: >-
+  Ontraport's data model is unusual and worth stating plainly: there is ONE endpoint family
+  and the entity is a parameter. Every record type is an "object" identified by an integer
+  object type ID passed as objectID; Contact is 0, Task is 1, Note is 12, Deals is 149,
+  custom objects are >= 10000 and vary per account. Relationships are not expressed as
+  nested resources or $refs — they are separate join objects (Tag Subscribers 138, Sequence
+  Subscribers 8, Custom Object Relationships 102) that must be read as first-class records.
+  Consequently the entity graph cannot be derived from the OpenAPI at all; it is derived
+  from the two published object tables.
+root_entity: Contact
+root_entity_id: 0
+identifier_scheme:
+  object_type_id: integer, identifies the TYPE; shared by every record of that type
+  id: integer, identifies the RECORD; unique within a type
+  unique_id: >-
+    string, added 2018-06-27 to ORM objects. Not editable; can be supplied on update or
+    saveorupdate to select the target record. GET by unique id added 2025-11-18
+    (getByUniqueId).
+  id_prefixes: none — Ontraport uses bare integers, so an ID is not self-describing
+custom_objects:
+  id_range: '>= 10000'
+  per_account: true
+  discovery: GET /objects/meta, or the MCP tool list_allowed_object_types
+  note: >-
+    Because custom objects and custom fields vary per account, no static schema for an
+    Ontraport account exists. Field discovery is mandatory before any write against an
+    unfamiliar account.
+
+entities:
+- name: Contact
+  id: 0
+  group: core-crm
+  access: [GET, POST, PUT, DELETE]
+  description: The central record; all interactions, purchases and automations relate back to contacts.
+  tools: [manage_tags, manage_subscriptions, manage_relationships]
+- name: Task
+  id: 1
+  group: core-crm
+  access: [GET, PUT]
+  description: Contact-associated tasks. State transitions are enforced by specialized tools.
+  tools: [get_recent_tasks, assign_task, complete_task, cancel_task, reschedule_task]
+- name: Group
+  id: 3
+  group: core-crm
+  access: [GET]
+  description: Static contact groupings managed in the UI, with the filter criteria that define them.
+  tools: [get_groups]
+- name: Log Item
+  id: 4
+  group: core-crm
+  access: [GET]
+  description: Read-only per-contact activity history — emails sent, calls logged.
+  tools: [get_contact_log]
+- name: Sequence
+  id: 5
+  group: marketing
+  access: [GET]
+  description: Email or SMS drip sequences.
+  tools: [get_subscribers, manage_subscriptions, pause_unpause_objects]
+- name: Rule
+  id: 6
+  group: marketing
+  access: [GET, POST, PUT, DELETE]
+  description: Trigger-based if/then rules configured in the UI.
+  tools: [pause_unpause_objects]
+- name: Message
+  id: 7
+  group: marketing
+  access: [GET, DELETE]
+  description: Individual email or SMS messages sent to contacts.
+  tools: [get_recent_messages]
+- name: Sequence Subscriber
+  id: 8
+  group: marketing
+  access: [GET]
+  join: true
+  description: Join table between Contacts and Sequences.
+  tools: [get_subscribers, manage_subscriptions]
+- name: Note
+  id: 12
+  group: core-crm
+  access: [GET, POST, PUT, DELETE]
+  description: Free-text notes attached to contact records.
+  tools: [get_recent_notes]
+- name: Tag
+  id: 14
+  group: core-crm
+  access: [GET, POST, PUT, DELETE]
+  description: Labels applied to contacts for segmentation and filtering.
+  tools: [manage_tags, get_subscribers]
+- name: Product
+  id: 16
+  group: commerce
+  access: [GET, POST, PUT, DELETE]
+  description: The product catalog. Full CRUD, no restrictions.
+- name: Purchase
+  id: 17
+  group: commerce
+  access: [GET]
+  tools: [get_purchases]
+- name: Landing Page
+  id: 20
+  group: marketing
+  access: [GET]
+  description: Landing pages built in the platform.
+  tools: [get_landing_page_url]
+- name: Form
+  id: 22
+  group: marketing
+  access: [GET]
+- name: Scheduled Broadcast
+  id: 23
+  group: marketing
+  access: [GET]
+  description: One-time email blasts queued to send at a future date.
+  tools: [get_scheduled_broadcasts]
+- name: Purchase History Log
+  id: 30
+  group: commerce
+  access: [GET]
+  description: Audit log of changes to purchase records.
+- name: Partner Program
+  id: 35
+  group: partners
+  access: [GET]
+- name: Partner
+  id: 36
+  group: partners
+  access: [GET]
+- name: Referral
+  id: 37
+  group: partners
+  access: [GET]
+- name: Commission
+  id: 38
+  group: partners
+  access: [GET]
+- name: Open Order
+  id: 44
+  group: commerce
+  access: [GET]
+  description: Active subscription orders.
+  tools: [get_subscribers, manage_subscriptions, cancel_subscription]
+- name: Credit Card
+  id: 45
+  group: commerce
+  access: [GET]
+  description: Payment methods on file for a contact.
+- name: Invoice
+  id: 46
+  group: commerce
+  access: [GET]
+  writes: specialized-tools-only
+  tools: [get_invoices, get_failed_transactions, create_invoice, update_invoice, pay_invoice, validate_offer, send_invoice, update_order, convert_transaction]
+- name: Order
+  id: 52
+  group: commerce
+  access: [GET, DELETE]
+  tools: [cancel_subscription, update_order]
+- name: Offer
+  id: 65
+  group: commerce
+  access: [GET, POST, PUT]
+- name: Task Outcome
+  id: 66
+  group: core-crm
+  access: [GET]
+  description: Reference list of valid outcomes for completing a task.
+  tools: [complete_task]
+- name: Gateway
+  id: 70
+  group: commerce
+  access: [GET]
+  description: Payment gateway configurations.
+  tools: [get_account_info]
+- name: Tracked Link
+  id: 80
+  group: marketing
+  access: [GET]
+- name: Automation Log Item
+  id: 100
+  group: marketing
+  access: [GET]
+  description: Per-contact history of automation steps fired.
+  tools: [get_automation_log]
+- name: Custom Object Relationship
+  id: 102
+  group: core-crm
+  access: [GET]
+  join: true
+  description: Links between contacts and custom objects, or between two contacts.
+  tools: [manage_relationships]
+- name: Automation
+  id: 140
+  group: marketing
+  access: [GET]
+  aliases: [campaigns]
+  description: Automation workflows. Also accessible via the legacy API key `campaigns`.
+  tools: [manage_subscriptions, pause_unpause_objects]
+- name: Tag Subscriber
+  id: 138
+  group: core-crm
+  access: [GET]
+  join: true
+  description: Join table between Contacts and Tags. Documented 2026-04-09.
+  tools: [get_subscribers, manage_tags]
+- name: Deal
+  id: 149
+  group: system-apps
+  access: [GET, POST, PUT, DELETE]
+  requires_app: true
+  description: Pipeline deals for sales tracking.
+- name: Company
+  id: 150
+  group: system-apps
+  access: [GET, POST, PUT, DELETE]
+  requires_app: true
+  description: Company/account records that contacts can be associated with.
+- name: Calendar Event
+  id: 160
+  group: calendar
+  access: [GET, POST, PUT, DELETE]
+- name: Survey
+  id: 172
+  group: system-apps
+  access: [GET]
+  requires_app: true
+- name: Payment
+  id: 227
+  group: commerce
+  access: [GET]
+  writes: specialized-tools-only
+  description: Payment transactions. Added to the API 2025-03-19.
+  tools: [process_transaction, refund_transaction, void_transaction, mark_transaction_paid, write_off_transaction, rerun_transaction]
+
+relationships:
+- from: Contact
+  to: Tag
+  cardinality: has_many
+  via: Tag Subscriber (138)
+  style: join-object
+- from: Contact
+  to: Sequence
+  cardinality: has_many
+  via: Sequence Subscriber (8)
+  style: join-object
+- from: Contact
+  to: Custom Object
+  cardinality: has_many
+  via: Custom Object Relationship (102)
+  style: join-object
+- from: Contact
+  to: Company
+  cardinality: belongs_to
+  via: Custom Object Relationship (102)
+  style: join-object
+  note: Exposed to agents through the manage_relationships tool.
+- from: Contact
+  to: Task
+  cardinality: has_many
+  via: contact reference on the Task record
+- from: Contact
+  to: Note
+  cardinality: has_many
+  via: contact reference on the Note record
+- from: Contact
+  to: Log Item
+  cardinality: has_many
+  via: contact reference; read-only
+- from: Contact
+  to: Automation Log Item
+  cardinality: has_many
+  via: contact reference; read-only
+- from: Contact
+  to: Purchase
+  cardinality: has_many
+- from: Contact
+  to: Credit Card
+  cardinality: has_many
+  note: >-
+    cc_id was added to transaction objects 2017-09-01 so a transaction can be charged to any
+    of several cards on file.
+- from: Contact
+  to: Open Order
+  cardinality: has_many
+- from: Order
+  to: Purchase
+  cardinality: has_many
+- from: Invoice
+  to: Payment
+  cardinality: has_many
+- from: Offer
+  to: Product
+  cardinality: has_many
+- from: Task
+  to: Task Outcome
+  cardinality: belongs_to
+  note: complete_task selects from this reference list.
+- from: Partner Program
+  to: Partner
+  cardinality: has_many
+- from: Partner
+  to: Referral
+  cardinality: has_many
+- from: Partner
+  to: Commission
+  cardinality: has_many
+- from: Message
+  to: Tracked Link
+  cardinality: has_many
+
+access_asymmetry:
+  read_only_types: >-
+    The majority of object types are GET-only through the API. Commerce is the sharpest
+    case: Invoices (46), Payments (227) and Open Orders (44) accept no generic writes at
+    all — every mutation must go through a purpose-built endpoint or MCP tool that carries
+    the state-transition logic.
+  full_crud_types:
+  - Contact (0)
+  - Note (12)
+  - Tag (14)
+  - Product (16)
+  - Rule (6)
+  - Deal (149)
+  - Company (150)
+  - Calendar Event (160)
+  - custom objects (>= 10000)
+
+derivation_note: >-
+  This graph is NOT derived from the OpenAPI. The captured specs describe a generic
+  interface with no per-entity schemas and no $refs between entities, so they contain no
+  relationship information. Every entity, ID, access level and relationship above comes from
+  the two published object tables named in `source`.

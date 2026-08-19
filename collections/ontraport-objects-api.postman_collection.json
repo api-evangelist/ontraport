@@ -1,0 +1,849 @@
+{
+  "item": [
+    {
+      "id": "3cf9d24e-8639-4e34-aa8a-f0814661a83e",
+      "name": "Objects",
+      "description": {
+        "content": "Generic CRUD operations across Ontraport object types.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0bd7e4b0-6ae4-4b34-8035-fcdb44a6284f",
+          "name": "List objects",
+          "request": {
+            "name": "List objects",
+            "description": {
+              "content": "Retrieves a collection of objects based on a set of parameters.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "objects"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "objectID",
+                  "value": "<integer>",
+                  "description": "(Required) Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+                },
+                {
+                  "disabled": false,
+                  "key": "start",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "range",
+                  "value": "<integer>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ebdc3e49-9f2b-4372-92f3-bcdb2c5303c5",
+              "name": "Collection of objects response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "objects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "objectID",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "start",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "range",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8294,\n  \"data\": [\n    {\n      \"key_0\": 7985,\n      \"key_1\": 6964\n    },\n    {\n      \"key_0\": true,\n      \"key_1\": 3435\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7d30ac29-f0d4-4337-a873-819c83abd4c5",
+          "name": "Create object",
+          "request": {
+            "name": "Create object",
+            "description": {
+              "content": "Adds new data to your database.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "objects"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objectID\": \"<integer>\",\n  \"email\": \"<email>\",\n  \"firstname\": \"<string>\",\n  \"lastname\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c27bb5ee-16b3-47b2-af76-fb3b6cb7caf4",
+              "name": "Single object response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "objects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"objectID\": \"<integer>\",\n  \"email\": \"<email>\",\n  \"firstname\": \"<string>\",\n  \"lastname\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 2899,\n  \"data\": {\n    \"key_0\": true,\n    \"key_1\": false,\n    \"key_2\": 5272,\n    \"key_3\": 4928.1089899517065\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "79a5b945-f464-4f3f-b2ec-f16badca0981",
+          "name": "Update object",
+          "request": {
+            "name": "Update object",
+            "description": {
+              "content": "Updates existing object data.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "objects"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objectID\": \"<integer>\",\n  \"email\": \"<email>\",\n  \"firstname\": \"<string>\",\n  \"lastname\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "205ec479-d519-4323-88bc-77a475d24795",
+              "name": "Single object response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "objects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"objectID\": \"<integer>\",\n  \"email\": \"<email>\",\n  \"firstname\": \"<string>\",\n  \"lastname\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 2899,\n  \"data\": {\n    \"key_0\": true,\n    \"key_1\": false,\n    \"key_2\": 5272,\n    \"key_3\": 4928.1089899517065\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "052c7640-7b70-4d4d-b100-073bd03eed87",
+          "name": "Delete object(s)",
+          "request": {
+            "name": "Delete object(s)",
+            "description": {
+              "content": "Permanently removes data from the database.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "objects"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "objectID",
+                  "value": "<integer>",
+                  "description": "(Required) Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+                },
+                {
+                  "disabled": false,
+                  "key": "id",
+                  "value": "<integer>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6adbbf21-0d8a-4556-9938-6930042d73ef",
+              "name": "Generic response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "objects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "objectID",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": 8340.47331737388\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "32b40dc3-8d44-4f2e-8539-2bb82f2989db",
+          "name": "Retrieve a single object by ID",
+          "request": {
+            "name": "Retrieve a single object by ID",
+            "description": {},
+            "url": {
+              "path": [
+                "object"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "objectID",
+                  "value": "<integer>",
+                  "description": "(Required) Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+                },
+                {
+                  "disabled": false,
+                  "key": "id",
+                  "value": "<integer>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e9c95ec2-cd03-46b4-92c8-3c4ac27cee9b",
+              "name": "Single object response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "object"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "objectID",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 2899,\n  \"data\": {\n    \"key_0\": true,\n    \"key_1\": false,\n    \"key_2\": 5272,\n    \"key_3\": 4928.1089899517065\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "11bce3aa-77be-48a8-9f81-7dc4cd8cce21",
+          "name": "Save or update object",
+          "request": {
+            "name": "Save or update object",
+            "description": {
+              "content": "Creates a new object or merges with an existing one if a unique field matches.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "objects",
+                "saveorupdate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objectID\": \"<integer>\",\n  \"email\": \"<email>\",\n  \"firstname\": \"<string>\",\n  \"lastname\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "985ca057-07b6-46a6-bbde-90dbe221a44b",
+              "name": "Single object response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "objects",
+                    "saveorupdate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"objectID\": \"<integer>\",\n  \"email\": \"<email>\",\n  \"firstname\": \"<string>\",\n  \"lastname\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 2899,\n  \"data\": {\n    \"key_0\": true,\n    \"key_1\": false,\n    \"key_2\": 5272,\n    \"key_3\": 4928.1089899517065\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e062bb9b-4fb8-4295-a810-755397070eef",
+          "name": "Retrieve objects by tag",
+          "request": {
+            "name": "Retrieve objects by tag",
+            "description": {},
+            "url": {
+              "path": [
+                "objects",
+                "tag"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "objectID",
+                  "value": "<integer>",
+                  "description": "(Required) Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+                },
+                {
+                  "disabled": false,
+                  "key": "tag_id",
+                  "value": "<integer>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8bb7dde3-e84d-4130-8a51-9894d405fb63",
+              "name": "Collection of objects response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "objects",
+                    "tag"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "objectID",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "tag_id",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1338,\n  \"data\": [\n    {\n      \"key_0\": 9320,\n      \"key_1\": 5213\n    },\n    {\n      \"key_0\": 1155,\n      \"key_1\": false,\n      \"key_2\": true\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d978f21a-17ed-4f98-a1eb-23c142f9f54e",
+          "name": "Retrieve object ID by email",
+          "request": {
+            "name": "Retrieve object ID by email",
+            "description": {},
+            "url": {
+              "path": [
+                "object",
+                "getByEmail"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "objectID",
+                  "value": "<integer>",
+                  "description": "(Required) Numeric Ontraport object type ID (e.g. 0 = Contacts)."
+                },
+                {
+                  "disabled": false,
+                  "key": "email",
+                  "value": "<email>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d972999f-836f-4bca-8615-9c3079cd4d37",
+              "name": "Generic response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "object",
+                    "getByEmail"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "objectID",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<email>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": 8340.47331737388\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.ontraport.com/1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "044a3262-52e6-4273-b079-9e4b7c8c6830",
+    "name": "Ontraport REST Metadata Objects API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Ontraport's REST API exposes CRUD access to contacts, transactions, tags,\nsequences, forms, landing pages, and ecommerce objects. Authentication uses\n`Api-Key` and `Api-Appid` HTTP headers. All endpoints share a generic object\ninterface where the object type is specified via parameters.\n\n\nContact Support:\n Name: Ontraport Developer Documentation",
+      "type": "text/plain"
+    }
+  }
+}

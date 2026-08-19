@@ -1,0 +1,139 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://ontraport.com/pricing and
+  https://ontraport.com/support/My-account/grandfathered-account-pricing
+description: >-
+  Ontraport sells four named self-serve subscription tiers — Basic, Plus, Pro and Enterprise
+  — plus a Custom level. The tier NAMES and the trial terms are published; the current
+  PRICES are not machine-readable. ontraport.com/pricing renders its whole price table
+  client-side from
+  app.ontraport.com/js/ontraport/opt_assets/libraries/OptAccountPackageManager, whose
+  server-rendered HTML contains only "$70" template placeholders — no plan price appears in
+  the delivered document. The one price table Ontraport does publish as static HTML is the
+  grandfathered reference for accounts created before 2022-06-30, recorded verbatim below
+  and clearly labelled as legacy. No API-specific plan exists: the 180 req/min rate limit is
+  account-scoped and identical on every tier, and increases are handled case-by-case by
+  support rather than by purchasing a tier.
+plan_count: 5
+currency: USD
+api_pricing: none
+api_pricing_note: >-
+  The API is included in every plan at no extra charge and carries no metered call cost. The
+  only API-adjacent limit is the shared 180 requests/minute account budget documented at
+  https://api.ontraport.com/doc/#rate-limiting.
+trial:
+  offered: true
+  length_days: 14
+  credit_card_required: false
+  terms: >-
+    "All plans start with a 14-day free trial. No credit card required to sign up." Upgrade
+    happens inside the platform before the trial ends; no action is needed to avoid a charge.
+billing:
+  periods:
+  - monthly
+  - annual
+  annual_discount: >-
+    Annual subscriptions are a one-year commitment with two months free.
+  refund: Full refund available within the first 30 days after signing up.
+  cancellation: Self-serve from inside the account at any time.
+
+plans:
+- name: Basic
+  price: null
+  price_published: false
+  note: >-
+    Tier name confirmed on https://ontraport.com/pricing and in the account package manager
+    library. Current price is rendered client-side and is not present in the served HTML.
+- name: Plus
+  price: null
+  price_published: false
+- name: Pro
+  price: null
+  price_published: false
+- name: Enterprise
+  price: null
+  price_published: false
+  features_marketed:
+  - High-volume email
+  - VIP support + onboarding
+  - Done-for-you services
+  - Dedicated infrastructure
+- name: Custom
+  price: null
+  price_published: false
+  note: Contact-sales tier; appears in the grandfathered table and in enterprise marketing.
+
+sales_gate:
+  present: true
+  detail: >-
+    The pricing page routes to "Talk to sales" and a discovery call for plan selection.
+    Prices exist and are shown to a browser, but no static document on the site states them.
+
+grandfathered_pricing:
+  applies_to: accounts created on or before 2022-06-30 that have not since been upgraded
+  effective: '2023-06-15'
+  source: https://ontraport.com/support/My-account/grandfathered-account-pricing
+  published_as: static HTML table
+  note: >-
+    Recorded because it is the only Ontraport price table this pipeline can read. These are
+    LEGACY prices and must not be presented as current pricing.
+  tiers:
+  - name: Basic
+    monthly: 99
+    annual: 990
+    contacts: 1000
+    users: 1
+    emails: unlimited
+  - name: Plus
+    monthly: 179
+    annual: 1790
+    contacts: 2500
+    users: 2
+    emails: unlimited
+  - name: Pro
+    monthly: 359
+    annual: 3590
+    contacts: 10000
+    users: 3
+    emails: unlimited
+  - name: Enterprise
+    monthly: 599
+    annual: 5990
+    contacts: 20000
+    users: 5
+    emails: 200000
+  - name: Custom
+    monthly: null
+    annual: null
+    contacts: up to 5,000,000
+    users: custom
+    emails: custom
+  overages:
+    additional_contacts: $99/mo per 100,000
+    additional_emails: $99/mo per 100,000
+    additional_users: $47/mo per user
+    auto_upgrade: >-
+      Exceeding the contact limit auto-upgrades Basic to Plus, Plus to Pro and Pro to
+      Enterprise; above Enterprise the account automatically buys a $99/mo 100k contact
+      package. Exceeding the email allowance auto-purchases $99 for 100k additional sends
+      for the billing period.
+    bulk_email_addon: 500,000 email sends for $399/month (Enterprise and above)
+  limits_noted:
+  - Custom object records with an email field count toward the contact limit.
+  - Pro accounts without a Dynamic CMS plan are limited to 25 rollup fields; Enterprise and Team to 50.
+
+evidence:
+- url: https://ontraport.com/pricing
+  status: 200
+  finding: >-
+    Tier names, trial terms, annual discount and refund policy present; no price figure in
+    the served HTML (only "$08", "$2", "$4" fragments unrelated to plan pricing).
+- url: https://app.ontraport.com/js/ontraport/opt_assets/libraries/OptAccountPackageManager/dist/opt_account_package_manager_lib.js
+  status: 200
+  finding: >-
+    Contains the plan keys basic / plus / pro / enterprise and the price-text template, whose
+    placeholder value is "$70" for every tier. Prices are fetched or injected at runtime.
+- url: https://ontraport.com/support/My-account/grandfathered-account-pricing
+  status: 200
+  finding: Full static price and quota table for legacy plans, effective 2023-06-15.

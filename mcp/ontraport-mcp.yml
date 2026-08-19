@@ -1,0 +1,307 @@
+generated: '2026-08-13'
+method: searched
+source: https://ontraport.com/support/My-account/mcp-server
+description: >-
+  Ontraport ships a first-party, hosted, remote MCP server at https://mcp.ontraport.com.
+  It is a streamable-HTTP MCP endpoint an agent POSTs to directly — there is no package to
+  install and no stdio process to run. Authorization is OAuth 2.1 (authorization code +
+  PKCE S256, dynamic client registration) against https://app.ontraport.com, with an
+  API-key header fallback (Api-Appid / Api-Key, or a single Authorization: Bearer
+  <appid>:<key>) for orchestration platforms that cannot run the OAuth flow.
+  The server is a translation layer over the Ontraport REST API: generic CRUD tools plus
+  purpose-built tools that carry the business logic and state transitions the raw REST
+  surface leaves to the caller.
+
+deployment:
+  mode: remote
+  endpoint: https://mcp.ontraport.com
+  auth: oauth
+  verified: probed
+
+status: published
+name: Ontraport MCP Server
+vendor: Ontraport
+docs: https://ontraport.com/support/My-account/mcp-server
+
+transport:
+  type: streamable-http
+  note: >-
+    Configured in clients as a remote URL. Ontraport publishes client-specific setup for
+    Claude Desktop and Claude Code (custom connector / `claude mcp add --transport http`),
+    ChatGPT, and Cursor (mcpServers entry with a `url` key and no `command`).
+
+x-evidence:
+  fetched: '2026-08-13'
+  probes:
+  - url: https://mcp.ontraport.com
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    http_status: 401
+    response: '{"error":"unauthorized","error_description":"Bearer token required"}'
+    www_authenticate: >-
+      Bearer resource_metadata="https://mcp.ontraport.com/.well-known/oauth-protected-resource",
+      scope="mcp:tools"
+    note: >-
+      The live tool schemas are auth-gated. The 401 is itself the verification that a real
+      MCP server answers at this URL: it returns an RFC 9728 challenge rather than a 404 or
+      an HTML shell. The tools below are therefore transcribed from Ontraport's own published
+      tool reference (names and descriptions only) — inputSchemas require authenticated
+      introspection and are NOT recorded here.
+  - url: https://mcp.ontraport.com/.well-known/oauth-protected-resource
+    http_status: 200
+    file: well-known/ontraport-oauth-protected-resource.json
+  - url: https://app.ontraport.com/.well-known/oauth-authorization-server
+    http_status: 200
+    file: well-known/ontraport-oauth-authorization-server.json
+  - url: https://mcp.ontraport.com/mcp
+    method: POST
+    http_status: 404
+    note: The endpoint is the bare host root, not a /mcp path.
+
+authentication:
+  primary: oauth
+  oauth:
+    resource: https://mcp.ontraport.com
+    authorization_server: https://app.ontraport.com
+    authorization_endpoint: https://app.ontraport.com/oauth/authorize
+    token_endpoint: https://app.ontraport.com/oauth/token
+    registration_endpoint: https://app.ontraport.com/oauth/register
+    revocation_endpoint: https://app.ontraport.com/oauth/revoke
+    grant_types:
+    - authorization_code
+    - refresh_token
+    pkce: S256
+    scopes:
+    - mcp:tools
+    dynamic_client_registration: true
+  fallback:
+    type: api-key
+    note: >-
+      For platforms without OAuth support. Not an OAuth client id/secret — the Ontraport
+      App ID and API Key are passed as headers.
+    forms:
+    - headers:
+      - Api-Appid
+      - Api-Key
+    - headers:
+      - 'Authorization: Bearer <app-id>:<api-key>'
+    docs_note: >-
+      Ontraport states API keys are never surfaced after setup — not in MCP connection
+      summaries, tool responses, URLs, user-facing error messages, or standard logs.
+
+client_configuration:
+  claude_code: >-
+    claude mcp add --scope user --transport http ontraport https://mcp.ontraport.com
+  claude_code_api_key: >-
+    claude mcp add --scope user --transport http ontraport https://mcp.ontraport.com
+    --header "Api-Appid: <app-id>" --header "Api-Key: <api-key>"
+  cursor_mcp_json: |
+    {
+      "mcpServers": {
+        "ontraport": {
+          "url": "https://mcp.ontraport.com"
+        }
+      }
+    }
+
+tool_permissions:
+  model: per-connection allow/deny
+  note: >-
+    After connecting, a configure control lets the account holder enable or disable
+    individual tools/capabilities. Ontraport specifically recommends leaving the Query
+    tools enabled (structural discovery) and, for accounts that want no destructive
+    surface, disabling the delete tools after setup.
+
+constraints:
+- >-
+  The agent works over a bounded set of records per call and will only ever see a fraction
+  of an account's records. Ontraport directs bulk/full-dataset work to the REST API or a
+  workflow tool (n8n, Zapier, Make) instead.
+- >-
+  Requests to delete every record in a collection are ignored by the server.
+- >-
+  Write operations on Invoices, Payments and Orders are available only through the
+  specialized commerce tools; generic update_object / delete_object are disabled for those
+  object types.
+
+summary:
+  tool_count: 47
+  categories: 4
+  schemas_captured: false
+  schemas_note: >-
+    Names and descriptions transcribed from the provider's published reference; inputSchema
+    for each tool requires an authenticated tools/list call.
+
+tools:
+- name: saveorupdate_object
+  category: crud
+  description: >-
+    Create or update a record based on a unique field match such as email. Ontraport's
+    recommended default because it prevents duplicates.
+- name: create_object
+  category: crud
+  description: Create a brand new record. Use when the record is known not to exist.
+- name: get_objects
+  category: crud
+  description: Fetch records by ID, a list of IDs, or a search condition.
+- name: update_object
+  category: crud
+  description: Modify a single record by ID or unique field.
+- name: delete_object
+  category: crud
+  description: Permanently delete a single record by ID.
+- name: delete_objects
+  category: crud
+  description: >-
+    Bulk delete records by IDs or a condition. Requests to delete all records in a
+    collection are ignored.
+- name: list_allowed_object_types
+  category: query
+  description: >-
+    List all record types available in the account. May differ from in-app permissions —
+    not every object is reachable through MCP.
+- name: get_object_meta
+  category: query
+  description: Get all available fields and their properties for a given record type.
+- name: count_objects
+  category: query
+  description: >-
+    Count records matching a condition, with optional field sums or averages (e.g. total
+    revenue).
+- name: get_account_info
+  category: query
+  description: Get Ontraport account details and settings — account number, timezone, configuration.
+- name: get_groups
+  category: query
+  description: List saved groups along with the filter criteria that define them.
+- name: get_subscribers
+  category: query
+  description: List who is currently subscribed to a tag, sequence or automation.
+- name: get_contact_log
+  category: query
+  description: >-
+    Full activity history for a contact — emails sent, links clicked, tasks completed.
+- name: get_automation_log
+  category: query
+  description: >-
+    All automation events for a contact — field changes, trigger fires, rule executions.
+- name: get_recent_messages
+  category: query
+  description: Recently sent emails or SMS with engagement stats (opens, clicks).
+- name: get_recent_notes
+  category: query
+  description: >-
+    Recently logged notes on records, including author names, filterable to phone-call notes.
+- name: get_recent_tasks
+  category: query
+  description: Tasks with assignee names, filterable by status (open, completed, cancelled).
+- name: get_task_form_requirements
+  category: query
+  description: >-
+    Required form fields needed to complete a task, by task ID. Callable proactively or
+    after a complete_task call fails for missing fields.
+- name: get_scheduled_broadcasts
+  category: query
+  description: Upcoming scheduled email or SMS broadcasts before they send.
+- name: get_landing_page_url
+  category: query
+  description: Retrieve hosted URLs of landing pages by name or ID.
+- name: build_api_condition
+  category: query
+  description: >-
+    Convert a human-readable condition into the raw Ontraport API condition format. Useful
+    for debugging and for handing a segment to the REST API or a workflow tool to execute
+    at scale.
+- name: manage_tags
+  category: manage
+  description: >-
+    Add or remove tags on records by tag ID or name. Core segmentation and automation trigger.
+- name: manage_subscriptions
+  category: manage
+  description: Manage contact enrollment in automations or sequences.
+- name: manage_relationships
+  category: manage
+  description: >-
+    Create or remove relationships between records, such as adding a contact to a company.
+- name: assign_task
+  category: manage
+  description: Create a task and assign it to a user, related to a contact or other record.
+- name: complete_task
+  category: manage
+  description: Complete a task, choose an outcome and optionally add a note.
+- name: cancel_task
+  category: manage
+  description: Cancel a task without marking it complete.
+- name: reschedule_task
+  category: manage
+  description: Reschedule a task to a new due date.
+- name: pause_unpause_objects
+  category: manage
+  description: Pause or resume automations or sequences.
+- name: get_invoices
+  category: commerce
+  description: List invoices with totals and status (draft, open, paid).
+- name: get_purchases
+  category: commerce
+  description: List purchases tied to a contact, including product details.
+- name: get_failed_transactions
+  category: commerce
+  description: List declined or overdue invoices — the starting point for collections work.
+- name: create_invoice
+  category: commerce
+  description: Create a new invoice with status Draft or Open.
+- name: update_invoice
+  category: commerce
+  description: Edit a draft or open invoice, including promoting a draft to open.
+- name: pay_invoice
+  category: commerce
+  description: Pay an invoice using a card already on file for the contact.
+- name: process_transaction
+  category: commerce
+  description: Charge a card directly through the payment gateway.
+- name: log_offline_purchase
+  category: commerce
+  description: Log an offline transaction without processing a charge.
+  note: >-
+    The Available Objects section of the same page refers to this tool as
+    log_offline_transaction. Recorded here under the name used in the tool reference table.
+- name: mark_transaction_paid
+  category: commerce
+  description: Mark an invoice as paid manually, with no charge processed.
+- name: rerun_transaction
+  category: commerce
+  description: Retry a previously failed or declined charge.
+- name: refund_transaction
+  category: commerce
+  description: Refund a settled charge back to the customer.
+- name: void_transaction
+  category: commerce
+  description: Void an unsettled charge before it clears.
+- name: write_off_transaction
+  category: commerce
+  description: Mark an invoice uncollectable and write it off.
+- name: cancel_subscription
+  category: commerce
+  description: Cancel a contact's active recurring subscription.
+- name: convert_transaction
+  category: commerce
+  description: Convert an invoice into collection or declined status.
+- name: send_invoice
+  category: commerce
+  description: >-
+    Send or resend an invoice to a contact. Drafts are not sent — finalize with
+    update_invoice first.
+- name: update_order
+  category: commerce
+  description: >-
+    Update the details of a recurring order — price, quantity, or billing frequency.
+- name: validate_offer
+  category: commerce
+  description: Verify offer and pricing configurations.
+- name: get_payments
+  category: commerce
+  description: >-
+    Listed against the Payments object (ID 227) in the Available Objects section of the MCP
+    reference. Not present in the Commerce tool table on the same page — recorded as
+    documented-but-unconfirmed.
+  confidence: low

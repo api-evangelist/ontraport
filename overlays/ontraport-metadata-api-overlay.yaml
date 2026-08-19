@@ -1,0 +1,68 @@
+overlay: 1.0.0
+info:
+  title: Ontraport Metadata API — API Evangelist enhancements
+  version: 1.0.0
+  x-generated: '2026-08-13'
+  x-method: generated
+  x-source: >-
+    Enhancements derived from Ontraport's published REST documentation at
+    https://api.ontraport.com/doc/ (authentication headers, 180 req/min rolling rate limit
+    and its X-Rate-Limit-* response headers, documented HTTP status codes, response
+    envelope). Extends openapi/ontraport-metadata-api-openapi.yml. The original OpenAPI is
+    never mutated.
+extends: ../openapi/ontraport-metadata-api-openapi.yml
+actions:
+- target: $.info
+  description: Add documentation, console and changelog pointers.
+  update:
+    x-api-evangelist:
+      docs: https://api.ontraport.com/doc/
+      console: https://api.ontraport.com/live/
+      changelog: https://api.ontraport.com/doc/#api-change-log
+      rate_limit: 180 requests per minute per account, rolling
+- target: $
+  description: Declare the documented rate-limit policy and response envelope at the root.
+  update:
+    x-rate-limit:
+      scope: account
+      limit: 180
+      window: 60s
+      rolling: true
+      headers:
+      - X-Rate-Limit-Limit
+      - X-Rate-Limit-Remaining
+      - X-Rate-Limit-Reset
+      exhausted_status: 429
+    x-response-envelope:
+      fields:
+      - name: code
+        type: integer
+        description: 0 indicates an HTTP 200 successful call.
+      - name: data
+        type: object
+        description: Object-specific attributes and data.
+      - name: account_id
+        type: integer
+        description: ID of the account making the API call.
+- target: $.paths['/objects/meta'].get
+  description: Assign a stable operationId; this is the field-discovery entry point for agents.
+  update:
+    operationId: getObjectMeta
+    x-agent-note: >-
+      Field discovery. The MCP tool get_object_meta is the agent-facing equivalent of this
+      operation.
+- target: $.paths['/objects/getInfo'].get
+  description: >-
+    Assign a stable operationId and record that this is the count endpoint pagination
+    depends on.
+  update:
+    operationId: getCollectionInfo
+    x-pagination-role: count
+- target: $.paths['/objects/fieldeditor'].post
+  description: Assign a stable operationId and flag the schema-mutating nature of the call.
+  update:
+    operationId: editObjectFields
+    x-schema-mutating: true
+    x-changelog:
+    - date: '2018-06-21'
+      change: Objects/fieldeditor endpoint added for adding and removing fields and sections on objects.

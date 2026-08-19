@@ -1,0 +1,141 @@
+# Ontraport
+
+> Ontraport is a business automation platform for small and mid-sized companies, combining
+> CRM, marketing automation, email and SMS, landing pages, membership sites, ecommerce and
+> payments in one workspace. It exposes two developer surfaces: a REST API at
+> https://api.ontraport.com/1 authenticated with a pair of static headers, and a first-party
+> remote MCP server at https://mcp.ontraport.com authenticated with OAuth 2.1.
+
+Generated: 2026-08-13
+Method: generated
+Source: apis.yml plus the artifacts in this repository. Ontraport does not publish an
+llms.txt of its own — /llms.txt returns 404 on ontraport.com, support.ontraport.com and
+mcp.ontraport.com, and 502 on api.ontraport.com.
+
+## What an agent needs to know first
+
+- The MCP server is the intended agent surface. It is remote — POST to
+  https://mcp.ontraport.com. There is nothing to install.
+- The REST API is a GENERIC OBJECT INTERFACE. The resource is a parameter, not a path
+  segment: most calls hit /objects or /object and pass an objectID (object type ID) to
+  select the record type. Contact is 0, Task 1, Note 12, Tag 14, Product 16, Deal 149,
+  Company 150, custom objects >= 10000.
+- Custom fields and custom objects vary per account, so there is no static schema. Call
+  GET /objects/meta (or the MCP tool get_object_meta) before writing to an account you have
+  not seen.
+- The recommended write is the upsert, POST /objects/saveorupdate (MCP:
+  saveorupdate_object). There is no Idempotency-Key header anywhere in the API; the
+  unique-field match on the upsert is the only repeat-safety mechanism.
+- Collection reads silently truncate at 50 records. Page with start and range or you will
+  quietly see only the first page.
+- One rate limit, 180 requests per minute per account, rolling. It is shared between the
+  REST API and the MCP server. Read X-Rate-Limit-Remaining and X-Rate-Limit-Reset.
+
+## API
+
+- [REST API reference](https://api.ontraport.com/doc/): the complete endpoint reference,
+  server-rendered HTML. Includes authentication, rate limiting, pagination, criteria, the
+  response envelope, error codes, the accessible-objects table and the API change log.
+- [Live API console](https://api.ontraport.com/live/): "try it out live" against a real
+  account. Note that this runs against live data — Ontraport publishes no sandbox and no
+  test mode.
+- [API change log](https://api.ontraport.com/doc/#api-change-log): dated entries from 2017
+  to 2026, doubling as the PHP SDK change log.
+
+## MCP
+
+- [Getting started with Ontraport's MCP Server](https://ontraport.com/support/My-account/mcp-server)
+- Endpoint: https://mcp.ontraport.com (streamable HTTP, no /mcp path)
+- Authorization: OAuth 2.1, authorization code + PKCE S256, authorization server
+  https://app.ontraport.com, single scope `mcp:tools`. Dynamic client registration is
+  supported. An API-key header fallback (Api-Appid / Api-Key, or
+  `Authorization: Bearer <app-id>:<api-key>`) exists for platforms without OAuth.
+- 47 tools in four categories: CRUD, Query, Manage, Commerce.
+- Bounded working set: the agent sees a fraction of an account's records per call.
+  Ontraport directs bulk work to the REST API or a workflow tool, not to the agent.
+- Guardrails: requests to delete every record in a collection are ignored; generic writes
+  are disabled on Invoices, Payments and Orders; tools can be individually disabled
+  per connection.
+
+## Authentication
+
+- REST: send BOTH `Api-Key` and `Api-Appid` headers on every request. Missing either one
+  returns 401 "Your App ID and API Key do not authenticate." Keys are unscoped and do not
+  expire; the effective surface is bounded by the Ontraport package-level and user-level
+  permissions of the credential owner (in force since 2019-02-01).
+- MCP: OAuth as above, or the header fallback.
+- Discovery documents (both return 200):
+  https://mcp.ontraport.com/.well-known/oauth-protected-resource and
+  https://app.ontraport.com/.well-known/oauth-authorization-server
+
+## Errors
+
+Every response — success or failure — is a JSON envelope `{code, data, account_id}` where
+`code: 0` means an HTTP 200 success. There is no RFC 9457 problem+json and no stable error
+slug, so branch on the HTTP status:
+
+- 400 Bad Request — malformed request data. Not retryable.
+- 401 Unauthorized — missing or mismatched Api-Key / Api-Appid.
+- 403 Forbidden — the credential owner's permissions do not allow it, or the object type is
+  read-only.
+- 404 Not Found — unknown resource; also returned for an invalid email on
+  /object/getByEmail since 2022-04-13.
+- 422 Unprocessable Entity — currently used only for invalid email addresses.
+- 429 Too Many Requests — rate limit exceeded; wait X-Rate-Limit-Reset seconds.
+- 500 Internal Server Error — retry with backoff, check the status page.
+
+## Events
+
+Four subscribable webhook events, managed through the API itself
+(POST /Webhook/subscribe, POST /Webhook/unsubscribe): `object_create`,
+`object_submits_form`, `sub_tag`, `unsub_tag`. Delivery history is queryable through the
+Webhook Log endpoints (successes retained 2 days, failures 7 days, 10,000 entries max).
+No signature or shared secret is published, so an inbound payload cannot be
+cryptographically verified. No AsyncAPI definition exists.
+
+## SDKs
+
+- [SDK-PHP](https://github.com/Ontraport/SDK-PHP) —
+  [packagist ontraport/sdk-php](https://packagist.org/packages/ontraport/sdk-php), v1.2.2,
+  published 2022-09-28. The only first-party client library, and the one every example in
+  the REST reference is written against.
+- There is no first-party JavaScript, Python, Ruby, Go, Java, .NET or Rust client. Packages
+  on npm and RubyGems under the Ontraport name are community-authored; the newest dates to
+  2021.
+
+## Plans and limits
+
+- [Pricing](https://ontraport.com/pricing) — Basic, Plus, Pro, Enterprise and Custom.
+  14-day free trial, no credit card. Prices are rendered client-side and are not present in
+  the served HTML.
+- The API is included in every plan with no metered call charge. Rate-limit increases are
+  handled case-by-case by support.
+- [Grandfathered pricing reference](https://ontraport.com/support/My-account/grandfathered-account-pricing)
+  — the only static price table Ontraport publishes; applies to accounts created before
+  2022-06-30.
+
+## Status, security and legal
+
+- [Service status](https://ontraport.com/service-status) →
+  [ontraportstatus.com](https://ontraportstatus.com), an Atlassian Statuspage with a
+  dedicated API component and a machine-readable feed at
+  https://ontraport.statuspage.io/api/v2/summary.json
+- [Security and scalability](https://ontraport.com/features/platform/security-and-scalability/)
+  — PCI DSS Level 1 claimed. No SOC 2, no ISO 27001, no trust portal.
+- [Legal](https://ontraport.com/legal) — Terms of Service, Anti-spam Policy, Privacy Policy
+  and GDPR (Ontraport attests compliance as a data processor).
+- No security.txt and no vulnerability disclosure policy is published on any Ontraport host.
+
+## Support
+
+- [Support Center](https://ontraport.com/support)
+- [GitHub organization](https://github.com/Ontraport)
+- [Blog](https://ontraport.com/blog/)
+
+## Not available
+
+- No OpenAPI, Swagger, GraphQL SDL or AsyncAPI is published by Ontraport.
+- No A2A agent card at /.well-known/agent-card.json or /.well-known/agent.json.
+- No sandbox, test mode or test credentials — every key is a live key against live data.
+- No first-party CLI.
+- No Sunset or Deprecation headers; deprecations are announced in change-log prose only.

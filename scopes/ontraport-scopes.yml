@@ -1,0 +1,60 @@
+generated: '2026-08-13'
+method: probed
+source: >-
+  https://mcp.ontraport.com/.well-known/oauth-protected-resource and
+  https://app.ontraport.com/.well-known/oauth-authorization-server, both fetched 2026-08-13
+  with HTTP 200; corroborated by https://ontraport.com/support/My-account/mcp-server
+docs: https://ontraport.com/support/My-account/mcp-server
+description: >-
+  Ontraport publishes exactly one OAuth scope, and it exists only on the MCP surface. The
+  REST API has no OAuth at all — it authenticates with a pair of static account-level
+  headers and has no scope concept, which means an Ontraport API key is unscoped and carries
+  whatever the owning user can do. The single mcp:tools scope is coarse: it grants the whole
+  47-tool surface, including the commerce tools that charge and refund cards. Ontraport's
+  compensating control is client-side, not server-side — a per-connection configure panel
+  where the account holder enables or disables individual tools after connecting.
+scheme: oauth2
+grant_types:
+- authorization_code
+- refresh_token
+pkce: S256
+dynamic_client_registration: true
+resource: https://mcp.ontraport.com
+authorization_server: https://app.ontraport.com
+endpoints:
+  authorization: https://app.ontraport.com/oauth/authorize
+  token: https://app.ontraport.com/oauth/token
+  registration: https://app.ontraport.com/oauth/register
+  revocation: https://app.ontraport.com/oauth/revoke
+scope_count: 1
+scopes:
+- name: mcp:tools
+  description: >-
+    Access to the tools exposed by the Ontraport MCP server. The only scope advertised in
+    both the protected-resource metadata and the authorization-server metadata, and the
+    scope named in the WWW-Authenticate challenge returned by an unauthenticated tools/list.
+  grants: >-
+    The full published MCP tool surface — CRUD, Query, Manage and Commerce. Not
+    read/write-separated and not resource-separated.
+  source: >-
+    scopes_supported in https://mcp.ontraport.com/.well-known/oauth-protected-resource
+rest_api:
+  oauth: false
+  scopes: false
+  note: >-
+    The REST API at https://api.ontraport.com/1 uses Api-Key + Api-Appid headers with no
+    scope parameter. Authorization is bounded instead by Ontraport package-level and
+    user-level permissions, which have applied to API requests since 2019-02-01, and by the
+    per-object Access column (many object types are GET-only) published in the Accessible
+    Objects table.
+gaps:
+- >-
+  One scope for a surface that includes process_transaction, refund_transaction and
+  cancel_subscription. There is no way to grant an agent read-only access at the
+  authorization layer.
+- >-
+  No scope separates the schema-mutating surface from the data surface, though in practice
+  Ontraport has kept field editing off the MCP server entirely.
+- >-
+  REST API keys have no scopes and no expiry, so key-based MCP connections bypass the scope
+  model altogether.
