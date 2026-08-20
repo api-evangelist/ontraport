@@ -31,6 +31,17 @@ tags:
   - CRM
   - Marketing Automation
   - Email Marketing
+  - E-Commerce
+  - Landing Pages
+  - Membership Sites
+  - MCP
+  - AI Agents
+  - Payments
+  - Sales Automation
+tags_raw:
+  - CRM
+  - Marketing Automation
+  - Email Marketing
   - Ecommerce
   - Landing Pages
   - Membership Sites
@@ -58,6 +69,12 @@ apis:
   humanURL: https://api.ontraport.com/doc/
   baseURL: https://api.ontraport.com/1
   tags:
+  - CRM
+  - Marketing Automation
+  - Contacts
+  - Transaction
+  - Sequences
+  tags_raw:
   - CRM
   - Marketing Automation
   - Contacts
