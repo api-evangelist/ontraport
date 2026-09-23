@@ -1,14 +1,13 @@
-generated: '2026-08-13'
+generated: '2026-09-19'
 method: probed
-source: live GET probes of every Ontraport host named in apis.yml, the OpenAPI servers[] block, and the MCP endpoint published at https://ontraport.com/support/My-account/mcp-server
-description: >-
-  Result of probing the standard /.well-known/ paths on every Ontraport host. Two
-  paths return real documents: the RFC 9728 OAuth protected-resource metadata served
-  by the Ontraport MCP server, and the RFC 8414 authorization-server metadata served
-  by the Ontraport application. Together they are the machine-readable description of
-  how an agent authorizes against Ontraport. Everything else 404s (ontraport.com,
-  mcp.ontraport.com) or is fronted by an edge that answers 502 for unknown paths
-  (api.ontraport.com) — recorded as an honest absence.
+source: live GET probes of every Ontraport host named in apis.yml, the OpenAPI servers[] block, and the
+  MCP endpoint published at https://ontraport.com/support/My-account/mcp-server
+description: 'Result of probing the standard /.well-known/ paths on every Ontraport host. Two paths return
+  real documents: the RFC 9728 OAuth protected-resource metadata served by the Ontraport MCP server, and
+  the RFC 8414 authorization-server metadata served by the Ontraport application. Together they are the
+  machine-readable description of how an agent authorizes against Ontraport. Everything else 404s (ontraport.com,
+  mcp.ontraport.com) or is fronted by an edge that answers 502 for unknown paths (api.ontraport.com) —
+  recorded as an honest absence.'
 summary:
   hosts_probed: 4
   paths_probed: 21
@@ -28,10 +27,9 @@ hosts:
     content_type: application/json
     document: true
     file: well-known/ontraport-oauth-protected-resource.json
-    note: >-
-      RFC 9728 protected-resource metadata. Names https://app.ontraport.com as the
-      authorization server and mcp:tools as the only supported scope. Also returned
-      in the WWW-Authenticate header on an unauthenticated tools/list POST.
+    note: RFC 9728 protected-resource metadata. Names https://app.ontraport.com as the authorization server
+      and mcp:tools as the only supported scope. Also returned in the WWW-Authenticate header on an unauthenticated
+      tools/list POST.
   - path: /.well-known/oauth-authorization-server
     status: 404
     document: false
@@ -56,6 +54,12 @@ hosts:
   - path: /llms.txt
     status: 404
     document: false
+  documents:
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: ontraport-mcp-oauth-protected-resource.json
+    bytes: 165
+  path_echo_control: passed
 - host: app.ontraport.com
   note: Ontraport application host; acts as the OAuth authorization server for the MCP surface.
   paths:
@@ -64,14 +68,18 @@ hosts:
     content_type: application/json
     document: true
     file: well-known/ontraport-oauth-authorization-server.json
-    note: >-
-      RFC 8414 authorization-server metadata. Authorization code + refresh token grants,
-      PKCE S256 required, dynamic client registration endpoint published, single scope
-      mcp:tools.
+    note: RFC 8414 authorization-server metadata. Authorization code + refresh token grants, PKCE S256
+      required, dynamic client registration endpoint published, single scope mcp:tools.
   - path: /.well-known/openid-configuration
     status: 404
     document: false
     note: Returns the Ontraport application's JSON 404 envelope, not an OIDC discovery document.
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: ontraport-app-oauth-authorization-server.json
+    bytes: 639
+  path_echo_control: passed
 - host: ontraport.com
   paths:
   - path: /.well-known/security.txt
@@ -102,9 +110,8 @@ hosts:
     status: 404
     document: false
 - host: api.ontraport.com
-  note: >-
-    The REST API host answers 502 with an HTML error page for any path it does not route,
-    including every /.well-known/ path. Treated as a miss, not a document.
+  note: The REST API host answers 502 with an HTML error page for any path it does not route, including
+    every /.well-known/ path. Treated as a miss, not a document.
   paths:
   - path: /.well-known/security.txt
     status: 502
@@ -133,3 +140,19 @@ hosts:
   - path: /llms.txt
     status: 502
     document: false
+x-mcp-probe:
+  probed: '2026-09-19'
+  issue: roadmap#321, roadmap#337
+  documents:
+  - host: https://mcp.ontraport.com
+    path: /.well-known/oauth-protected-resource
+    file: ontraport-mcp-oauth-protected-resource.json
+  - host: https://app.ontraport.com
+    path: /.well-known/oauth-authorization-server
+    file: ontraport-app-oauth-authorization-server.json
+  validated_on: resource (RFC 9728) / issuer (RFC 8414, OIDC)
+  negative_control: one per host; a 2xx JSON object at an impossible path discards the host
+note: 'MCP-host OAuth discovery added 2026-09-19 (roadmap#321/#337): the harvest visits a provider''s
+  primary hosts, and RFC 9728 protected-resource metadata lives on the MCP host, so these documents existed
+  and were invisible to the scorer. Fetched live and validated on `resource`/`issuer`; one negative control
+  per host.'
