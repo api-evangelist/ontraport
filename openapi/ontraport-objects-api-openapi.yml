@@ -160,40 +160,7 @@ paths:
       operationId: getObjectGetByEmail
       x-operation-id-source: derived
 components:
-  responses:
-    ObjectsResponse:
-      description: Collection of objects response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ObjectsListResponse'
-    ObjectResponse:
-      description: Single object response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ObjectResponse'
-    SimpleResponse:
-      description: Generic response
-      content:
-        application/json:
-          schema:
-            type: object
-            additionalProperties: true
   schemas:
-    ObjectInput:
-      type: object
-      additionalProperties: true
-      properties:
-        objectID:
-          type: integer
-        email:
-          type: string
-          format: email
-        firstname:
-          type: string
-        lastname:
-          type: string
     ObjectsListResponse:
       type: object
       additionalProperties: true
@@ -214,6 +181,39 @@ components:
         data:
           type: object
           additionalProperties: true
+    ObjectInput:
+      type: object
+      additionalProperties: true
+      properties:
+        objectID:
+          type: integer
+        email:
+          type: string
+          format: email
+        firstname:
+          type: string
+        lastname:
+          type: string
+  responses:
+    ObjectsResponse:
+      description: Collection of objects response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ObjectsListResponse'
+    ObjectResponse:
+      description: Single object response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ObjectResponse'
+    SimpleResponse:
+      description: Generic response
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
   parameters:
     ObjectTypeId:
       name: objectID
