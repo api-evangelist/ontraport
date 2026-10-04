@@ -65,14 +65,6 @@ paths:
       operationId: postObjectsFieldeditor
       x-operation-id-source: derived
 components:
-  parameters:
-    ObjectTypeId:
-      name: objectID
-      in: query
-      required: true
-      description: Numeric Ontraport object type ID (e.g. 0 = Contacts).
-      schema:
-        type: integer
   responses:
     SimpleResponse:
       description: Generic response
@@ -81,6 +73,14 @@ components:
           schema:
             type: object
             additionalProperties: true
+  parameters:
+    ObjectTypeId:
+      name: objectID
+      in: query
+      required: true
+      description: Numeric Ontraport object type ID (e.g. 0 = Contacts).
+      schema:
+        type: integer
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

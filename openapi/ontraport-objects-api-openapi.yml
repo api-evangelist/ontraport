@@ -195,18 +195,6 @@ components:
             type: object
             additionalProperties: true
   responses:
-    ObjectResponse:
-      description: Single object response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ObjectResponse'
-    ObjectsResponse:
-      description: Collection of objects response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ObjectsListResponse'
     SimpleResponse:
       description: Generic response
       content:
@@ -214,6 +202,18 @@ components:
           schema:
             type: object
             additionalProperties: true
+    ObjectsResponse:
+      description: Collection of objects response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ObjectsListResponse'
+    ObjectResponse:
+      description: Single object response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ObjectResponse'
   parameters:
     ObjectTypeId:
       name: objectID
