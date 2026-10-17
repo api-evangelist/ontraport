@@ -160,7 +160,47 @@ paths:
       operationId: getObjectGetByEmail
       x-operation-id-source: derived
 components:
+  responses:
+    ObjectsResponse:
+      description: Collection of objects response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ObjectsListResponse'
+    ObjectResponse:
+      description: Single object response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ObjectResponse'
+    SimpleResponse:
+      description: Generic response
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
   schemas:
+    ObjectsListResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        code:
+          type: integer
+        data:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    ObjectResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        code:
+          type: integer
+        data:
+          type: object
+          additionalProperties: true
     ObjectInput:
       type: object
       additionalProperties: true
@@ -174,46 +214,6 @@ components:
           type: string
         lastname:
           type: string
-    ObjectResponse:
-      type: object
-      additionalProperties: true
-      properties:
-        code:
-          type: integer
-        data:
-          type: object
-          additionalProperties: true
-    ObjectsListResponse:
-      type: object
-      additionalProperties: true
-      properties:
-        code:
-          type: integer
-        data:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-  responses:
-    SimpleResponse:
-      description: Generic response
-      content:
-        application/json:
-          schema:
-            type: object
-            additionalProperties: true
-    ObjectsResponse:
-      description: Collection of objects response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ObjectsListResponse'
-    ObjectResponse:
-      description: Single object response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ObjectResponse'
   parameters:
     ObjectTypeId:
       name: objectID
