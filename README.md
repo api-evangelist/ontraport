@@ -1,4 +1,4 @@
-# Ontraport (ontraport)
+# Ontraport
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,64 +64,152 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Ontraport is a business automation platform combining CRM, marketing automation, email marketing, landing pages, ecommerce, and membership site capabilities for small businesses and entrepreneurs. The platform unifies contact management, sales pipelines, payment processing, and visual automation campaigns in a single workspace. Ontraport's REST API exposes contacts, transactions, tags, sequences, forms, landing pages, and ecommerce objects using API-Key and Api-Appid header authentication.
+Ontraport is a business automation platform combining CRM, marketing automation, email marketing, landing pages, ecommerce, and membership site capabilities for small businesses and entrepreneurs. The platform unifies contact management, sales pipelines, payment processing, and visual automation campaigns in a single workspace. Ontraport's REST API exposes contacts, transactions, tags, sequences, forms, landing pages, and ecommerce objects using API-Key and Api-Appid header authentication, through a generic object interface where the record type is selected by an integer object type ID rather than by a path segment. Ontraport also runs a first-party remote MCP server at https://mcp.ontraport.com, publishing 47 tools across CRUD, query, management and commerce and authorizing them with OAuth 2.1 (PKCE, dynamic client registration) under a single mcp:tools scope.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/ontraport/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/ontraport/refs/heads/main/apis.yml)
+**Areas:** CRM · Marketing Automation · Email Marketing · E-Commerce · Landing Pages · Membership Sites · MCP · AI Agents · Payments · Sales Automation
 
-## Scope
+## Ontraport on APIs.io
 
-- **Type:** Index
+Everything profiled for Ontraport is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/ontraport/](https://apis.io/providers/ontraport/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (4)
 
-- CRM
-- Marketing Automation
-- Email Marketing
-- Ecommerce
-- Landing Pages
-- Membership Sites
+- [Ontraport REST API](https://apis.io/apis/ontraport/rest-api/) — RESTful API providing CRUD access to contacts, transactions, tags, sequences, forms, landing pages, and ecommerce objects. Authentication uses two headers,…
+- [Ontraport Metadata API](https://apis.io/apis/ontraport/ontraport-metadata-api/) — Object metadata and field information.
+- [Ontraport Objects API](https://apis.io/apis/ontraport/ontraport-objects-api/) — Generic CRUD operations across Ontraport object types.
+- [Ontraport MCP Server](https://apis.io/apis/ontraport/mcp/) — Ontraport's first-party, hosted, remote MCP server. A streamable-HTTP endpoint an agent POSTs to directly at https://mcp.ontraport.com — there is no package…
 
-## Timestamps
+### Published properties
 
-- **Created:** 2026-05-11
-- **Modified:** 2026-05-11
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### AsyncAPI (1)
 
-### Ontraport REST API
+Event-driven and webhook contracts.
 
-RESTful API providing CRUD access to contacts, transactions, tags, sequences, forms, landing pages, and ecommerce objects. Authentication uses two headers, Api-Key and Api-Appid, on every request, with a 180-requests-per-minute rolling rate limit.
+- [Ontraport Webhooks](https://apis.io/asyncapis/ontraport/ontraport-webhooks/)
 
-- **Human URL:** [https://api.ontraport.com/doc/](https://api.ontraport.com/doc/)
-- **Base URL:** `https://api.ontraport.com/1`
+#### MCP servers (1)
 
-#### Tags
+Model Context Protocol servers that expose the API to agents.
 
-- CRM
-- Marketing Automation
-- Contacts
-- Transactions
-- Sequences
+- [Ontraport MCP Server](https://apis.io/servers/ontraport/ontraport-mcp-server/)
 
-#### Properties
+#### Agentic access (1)
 
-- [Documentation](https://api.ontraport.com/doc/)
-- [Live  Testing](https://api.ontraport.com/live/)
-- [Git Hub  S D K](https://github.com/Ontraport/SDK-PHP)
-- [Postman Collection](collections/ontraport.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/ontraport.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Which operations an agent can call, which act, and which need a human in the loop.
 
-## Common Properties
+- [Ontraport Agentic Access](https://apis.io/agentic-access/ontraport/ontraport-agentic-access/)
 
-- [LinkedIn](https://www.linkedin.com/company/ontraport)
+#### Collections (3)
+
+Postman and Open Collection request collections.
+
+- [Ontraport REST API](https://apis.io/collections/ontraport/open-ontraport/)
+- [Ontraport REST Metadata API](https://apis.io/collections/ontraport/open-ontraport-metadata-api/)
+- [Ontraport REST Metadata Objects API](https://apis.io/collections/ontraport/open-ontraport-objects-api/)
+
+#### Overlays (2)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Ontraport Metadata Api Overlay](https://apis.io/overlays/ontraport/ontraport-metadata-api-overlay/)
+- [Ontraport Objects Api Overlay](https://apis.io/overlays/ontraport/ontraport-objects-api-overlay/)
+
+#### Security (4)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Ontraport Authentication](https://apis.io/security/ontraport/ontraport-authentication/)
+- [Ontraport Domain Security](https://apis.io/security/ontraport/ontraport-domain-security/)
+- [Ontraport Trust Center](https://apis.io/security/ontraport/ontraport-trust-center/)
+- [Ontraport Vulnerability Disclosure](https://apis.io/security/ontraport/ontraport-vulnerability-disclosure/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Ontraport Scopes](https://apis.io/scopes/ontraport/ontraport-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Ontraport Plans Pricing](https://apis.io/plans/ontraport/ontraport-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Ontraport Rate Limits](https://apis.io/rate-limits/ontraport/ontraport-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://ontraport.com)
 - [Documentation](https://api.ontraport.com/doc/)
+- [Getting started](https://api.ontraport.com/doc/#authentication)
+- [API reference](https://api.ontraport.com/doc/)
 - [Pricing](https://ontraport.com/pricing)
-- [Sign Up](https://ontraport.com/freetrial)
 - [Support](https://support.ontraport.com)
-- [GitHub Organization](https://github.com/Ontraport)
+- [Blog](https://ontraport.com/blog/feed/)
+- [Terms of service](https://ontraport.com/legal)
+- [Privacy policy](https://ontraport.com/legal)
+- [GitHub](https://github.com/Ontraport)
+- [Status](https://ontraportstatus.com)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 64.2** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 56.1 |
+| Contract governance | 18.2 |
+| Operational transparency | 63.2 |
+| Developer ergonomics | 67.3 |
+| Access clarity | 85.5 |
+
+**Agent readiness 54.9** — agent-native
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | documented (partial credit) |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 35.7** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/ontraport/](https://apis.io/providers/ontraport/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Ontraport: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/ontraport/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
